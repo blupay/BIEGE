@@ -1,0 +1,22 @@
+{% extends "beige/dashboard.html" %}
+{%block title%}<title>Password Confirmation</title> {%endblock title%}
+{% block content %}
+
+<div class="panel panel-danger">
+<div class="panel-heading">Password Changed</div>
+<div class="panel-body">
+
+<form class = "form-horizontal" style="margin-left:50px;" action="." method="post">
+{% csrf_token %}
+		<fieldset class="">
+		<legend><b style=""> </b></legend>
+		<p>Password successfully changed</p>
+
+      </fieldset>
+  		</form>	
+
+
+
+</div>
+</div>
+{% endblock %}

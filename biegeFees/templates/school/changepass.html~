@@ -1,0 +1,23 @@
+{% extends "beige/dashboard.html" %}
+{%block title%}<title>Change Password</title> {%endblock title%}
+{% block content %}
+
+<div class="panel panel-danger">
+<div class="panel-heading">Change Password</div>
+<div class="panel-body">
+
+<form class = "form-horizontal" style="margin-left:50px;" action="." method="post">
+{% csrf_token %}
+		<fieldset class="">
+		<legend><b style="">Change Password</b></legend>
+		{{ form.as_p }}
+<button style="margin-left:0px; margin-top:40px;"class="btn btn-primary btn-large" type="submit" value="" >
+<b>Save</b></button>
+      </fieldset>
+  		</form>	
+
+
+
+</div>
+</div>
+{% endblock %}

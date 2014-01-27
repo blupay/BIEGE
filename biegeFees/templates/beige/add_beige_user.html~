@@ -1,0 +1,84 @@
+{% extends "beige/dashboard.html" %}
+
+{%block title%}<title>Beige Users Registration </title> {%endblock title%}
+
+
+{% block content %}
+
+<div class="panel panel-danger" style="background-color:red; ">
+  <!-- Default panel contents -->
+  <div class="panel-heading">Add Beige Users </div>
+  <div class="panel-body">
+ <form class="form-horizontal" action="." method="post">
+ <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">Select Branch</label>
+    <div class="col-sm-6">
+   <select class="form-control" name="branch">
+   <option value="0" selected="selected" disabled>-Select-</option>
+   {% for bch in branch %}
+ <option value="{{bch.branch_name}}">{{bch.branch_name}} </option>
+{% endfor %}  
+ 
+   </select>
+    </div>
+  </div> 
+  
+  
+ <!--<div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">Username</label>
+    <div class="col-sm-6">
+      <input type="text" name="username" class="form-control" id="inputEmail3" placeholder="Username">
+    </div>
+  </div> -->
+  
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">First Name</label>
+    <div class="col-sm-6">
+      <input type="text" name="first_name" class="form-control" id="inputEmail3" placeholder="First Name">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">last Name</label>
+    <div class="col-sm-6">
+      <input type="text" name="last_name" class="form-control" id="inputEmail3" placeholder="last Name">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">Mobile</label>
+    <div class="col-sm-6">
+      <input type="tel" name="mobile" class="form-control" id="inputEmail3" placeholder="Mobile">
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+    <div class="col-sm-6">
+      <input type="email" name="email" class="form-control" id="inputEmail3" placeholder="Email">
+    </div>
+  </div>
+ <!-- <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">Password</label>
+    <div class="col-sm-6">
+      <input type="password" name="password1" class="form-control" id="inputEmail3" placeholder="Password">
+    </div>
+  </div> -->
+ <fieldset style="border:2px;border-color:red; border-radius:20px;">
+  <!--{{ form.as_p}}-->
+  {% for field in form1 %}
+  {{field.label_tag}}
+  {{field.errors}}
+  {{field}}</br>
+  {% endfor %}
+  <!--{{ form1.as_p}}--> 
+ 
+ </fieldset>
+
+ <div class="col-md-3">    
+ <button class="btn btn-lg btn-primary btn-block" type="submit" value="">Add</button>
+ </div>
+</form>
+</div>
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,117 @@
+{% extends "beige/dashboard.html" %}
+
+{%block title%}<title> School detail | {{get_school.schoolName}}</title> {%endblock title%}
+
+
+{% block content %}
+
+<div class="panel panel-danger">
+  <!-- Default panel contents -->
+  <div class="panel-heading">  <b> {{get_school.schoolName}} </b> </div>
+  
+
+  
+  <div class="panel-body">
+     <!--  <button type="button" data-loading-text="Loading..."  class="btn btn-primary col-md-3">
+ Students
+</button> -->
+<!-- <form class="form-horizontal" role="form" action="/beige/st-search/" method="GET">
+  <div class="form-group " style="background-color:green;">
+    <label for="inputEmail3" class="col-sm-2 control-label"></label>
+    <div class="col-sm-6">  <span class="glyphicon glyphicon-search"></span>
+      <input type="text" name="q" class="form-control"  placeholder="Search by student ID or Student Name" style="margin-left:270px;">
+      
+    </div>
+  </div>
+</form> -->
+
+<form class="form-horizontal" role="form" action="/beige/st_search/" method="GET">
+<div class="row">
+  <div class="col-lg-6 col-lg-offset-6">
+    <div class="input-group">
+      
+      <input type="text" name="q" class="form-control"  placeholder="Search by student ID or Student Name">
+      <span class="input-group-btn">
+        <button class="btn btn-danger" type="submit">Go!</button>
+      </span>
+    </div><!-- /input-group -->
+  
+  
+  </div>
+</div><!-- /.row -->
+</form>
+  <ul class="nav nav-tabs" style="background-color:; margin-top:-30px;">
+  <li class="active"><a href="#students" data-toggle="tab" style="color:brown;">Students</a></li>
+  <li><a href="#recent" data-toggle="tab">Recent Transactions</a></li>
+  <li><a href="#stats" data-toggle="tab">Statistics</a></li>
+  
+</ul>
+<h5> Search Results ({{nstudent_.count}}) Found  | <a href="/beige/school_details/{{get_school.pk}}/True"  style="color:brown;" > View All</a> </h5>
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane fade in active" id="students">
+  
+  <table class="table table-striped table-bordered table-condensed" style="margin-top:5px;">
+                     					 <thead>
+                       						 <tr>
+                              
+                               				                                		 
+                                         		 <th><b  style  = "color:brown;  position:relative;margin-left:10px;"><h>Student ID</h></b> </th>
+                                         		 <th> <b  style  = " color:brown; position:relative;margin-left:10px;"><h>Full Name </h> </b></th>       
+                                         		 <th><b  style  = " color:brown; position:relative;margin-left:10px;"><h>Transaction Details</h></b> </th>
+                                         		 
+						
+                                             			</tr>
+                                                         </thead>
+
+
+								<tbody>
+      									{% for std in student_ %}
+      									<tr>
+      									<th><h><span class="muted"> </span>{{std.studentID}}&nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{std.fullnameC}} &nbsp</h></th>
+        									
+        									
+        									<th><h><span class="muted"> </span> <a href="/beige/st-search/?q={{std.studentID}}" > view </a>&nbsp</h></th>
+        									
+      									</tr>
+      									
+      									{% endfor %}
+      									
+    								</tbody>
+  							</table>
+  							<div class="pagination-centered"  style="margin-left:300px;">
+    <span class="step-links">
+        {% if student_.has_previous %}
+            <a href="?page={{ student_.previous_page_number }}">previous</a>
+        {% endif %}
+        
+        <span class="current">
+            Page {{ student_.number }} of {{ student_.paginator.num_pages }}.
+        </span>
+
+        {% if student_.has_next %}
+            <a href="?page={{ student_.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>       
+  
+  
+  
+  
+  
+  </div>
+  <div class="tab-pane" id="recent">..2.</div>
+  <div class="tab-pane" id="stats">..3.</div>
+  
+</div>
+  
+  
+  
+ </div>
+ 
+ 
+ </div>
+
+
+{% endblock %}

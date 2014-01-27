@@ -1,0 +1,25 @@
+{% extends "school/dashboard.html" %}
+{%block title%}<title>Change Password</title> {%endblock title%}
+{% block content %}
+
+<div class="panel panel-primary">
+  <!-- Default panel contents -->
+  <div class="panel-heading">Change Password</div>
+  <div class="panel-body">
+<form class = "form-horizontal" style="margin-left:;" action="." method="post">
+{% csrf_token %}
+		<fieldset class="">
+		<legend><b style="">Change Password</b></legend>
+		{{ form.as_p }}
+
+      </fieldset>
+<div class="col-md-3">    
+ <button class="btn btn-lg btn-primary btn-block" type="submit" value="">Change</button>
+ </div>
+  		</form>	
+
+
+
+</div>
+</div>
+{% endblock %}

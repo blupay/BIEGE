@@ -1,0 +1,64 @@
+{% extends "beige/dashboard.html" %}
+
+{%block title%}<title>Payment|Search Student</title> {%endblock title%}
+
+
+{% block content %}
+
+<div class="panel panel-danger">
+  <!-- Default panel contents -->
+  <div class="panel-heading">New Transaction</div>
+  <div class="panel-body">
+ <form class="form-horizontal" role="form" action="/beige/st-search/" method="GET">
+ 
+ 
+ <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">School</label>
+    <div class="col-sm-6"> 
+<select class="form-control"  name="school">
+  <option selected="selected" disabled >-Select School-</option>
+   {% for sch in schools %}
+ <option value="{{sch.schoolName}}">{{sch.schoolName}} </option>
+{% endfor %}
+   </select>  
+  </div>
+  </div>
+
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">Student ID</label>
+    <div class="col-sm-6">
+      <input type="text" name="q" class="form-control"  placeholder="Search by Student ID">
+    </div>
+  </div>
+ <button class="btn btn-lg btn-danger btn-block" style="width:200px; margin-left:410px; margin-top:-80px;" type="submit" value="">Find Student </button>
+</form>
+ 
+</div>
+</div>
+{{popup}}
+
+{% ifnotequal popup '' %}
+
+{{popup}}
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+     {% endifnotequal %}
+{% endblock %}
+
+
+

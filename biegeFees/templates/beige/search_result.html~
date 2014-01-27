@@ -1,0 +1,71 @@
+{% extends "beige/dashboard.html" %}
+
+{%block title%}<title>Payment | Search Result</title> {%endblock title%}
+
+
+{% block content %}
+
+<div class="panel panel-danger">
+<div class="panel-heading">Summary Of Account Details </div>
+  <div class="panel-body">
+   <h4> <font color="grey">Student ID :</font> {{student_.studentID}}</h4>
+   <h4> <font color="grey">Student :</font> {{student_.fullnameC}}</h4>
+   <h4> <font color= "grey">School : </font> {{student_.schoolID.schoolName}}</h4>
+   <button  class="btn btn-lg btn-danger btn-block" type="submit" style ="width:250px; margin-top:-90px; margin-left:550px;"value="">
+  <a href="/beige/st_details/{{student_.pk}}/True/" style="color: white;" ><h2>Make Payment</h2></a></button>
+   <table class="table table-striped table-bordered table-condensed" style="margin-top:5px;">
+                     					 <thead>
+                       						 <tr>
+                              
+                               				 <th> <b  style  = " color:brown; position:relative;margin-left:10px;"><h>Date </h> </b></th>
+                                   
+                                         		 <th><b style  = "color:brown;  position:relative;margin-left:10px;"><h>Payment type</h></b> </th>
+                                         		 
+                                         		 <th><b  style  = "color:brown;  position:relative;margin-left:10px;"><h>Payment Amount</h></b> </th>
+                                         		 <th><b  style  = "color:brown;  position:relative;margin-left:10px;"><h>Branch</h></b> </th>
+                                         		 
+                                         		 <th><b  style  = " color:brown; position:relative;margin-left:10px;"><h>Teller</h></b> </th>
+						
+                                             			</tr>
+                                                         </thead>
+
+
+								<tbody>
+      									{% for trans in student_trans %}
+      									<tr>
+        									<th><h><span class="muted"> </span>{{trans.date_added}} &nbsp</h></th>
+        									<th><h><span class="muted"></span>{{trans.feesType}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{trans.amount}}&nbsp</h></th>
+        									<th><h><span class="muted"> </span> Branch name &nbsp</h></th>
+        									
+        									<th><h><span class="muted"> </span>{{trans.tellerID}}&nbsp</h></th>
+      									</tr>
+      									
+      									{% endfor %}
+      									
+    								</tbody>
+    								
+    								
+    								
+    								
+    								
+  							</table>
+  
+  
+  
+  
+ 
+
+</div>
+</div>
+
+  
+ 
+
+</div>
+</div>
+
+{% endblock %}
+
+
+

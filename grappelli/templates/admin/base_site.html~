@@ -1,0 +1,14 @@
+{% extends "admin/base.html" %}
+{% load i18n grp_tags %}
+ 
+
+
+
+{% block title %}{{ title }} | {% trans 'GOLDSTREET site admin' %}{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name">{% trans 'galore' %}</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+ 

@@ -1,0 +1,33 @@
+'''
+		if not request.POST.get('surname',''):
+			errors.append('Enter first name')
+                print 1
+		if not errors:
+                        
+                        student.schoolID = currentUser.School
+			student.surname = request.POST['surname']
+                        student.othername = request.POST['othername']
+                        student.dateOfBirth = request.POST['dob']
+                        student.email    = request.POST['email']
+                        student.mobile_number = request.POST['mobile']
+                        student.residential_address = request.POST['address']
+                        
+                        student.gender  = request.POST['gender']
+                        
+                        print request.POST['gender']
+                        print student.gender
+                        #print request.POST['country']
+                        #print request.POST['course']
+                        try:
+    				student.Nationality  = request.POST['country']
+			except MultiValueDictKeyError:
+   				student.gender = False
+                        try:
+    				student.programme  = request.POST['course']
+                                print request.POST['course']
+
+			except MultiValueDictKeyError:
+   				student.programme = False
+                      
+                        student.save()
+'''

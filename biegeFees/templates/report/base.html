@@ -1,0 +1,154 @@
+{% load i18n %}<!DOCTYPE HTML>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/bootstrap-old/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/static/bootstrap-old/css/bootstrap-responsive.css"/>
+
+    
+    <style type="text/css">
+      body {
+	padding-top: 60px;
+        padding-bottom: 40px;
+	background: # url(/static/images/) repeat;
+	font-family: 'Abel', sans-serif;
+	font-size: 15px;
+	color: #FFFFFF;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+	
+	background: #056796;
+	color: #FFFFFF;
+      }
+
+
+	h1, h2, h3 ,h5 ,th {
+	margin: 0;
+	padding: 0;
+	text-transform: uppercase;
+	font-family: 'Oswald', sans-serif;
+	font-weight: 200;
+	color: #;
+	}
+
+
+	a {
+	font-family: 'Oswald', sans-serif;
+	color: #FFFFFF;
+	font-size: 15px;
+	}
+      fieldset {
+        float: left;
+        width: 300px;
+      }
+      .actions {
+        float: left;
+        clear: both;
+      }
+      p.row {
+        margin-left: 0px;
+      }
+      .caption, .caption:hover {
+        font-weight: bold !important;
+        background: #EEE !important;
+      }
+      .grouper, .grouper:hover {
+        background: #333 !important;
+        color: #EEE !important;
+      }
+      .utils {
+        
+        sheight: 70px;
+        text-align: left;
+      }
+      .utils p {
+          margin: 0;
+          padding: 0;
+      }
+      .readthedocs {
+        background: url("") no-repeat scroll left top transparent;
+        background-color: #404750;
+      }
+      .travis {
+        margin-top: 50px;
+        text-align: right;
+      }
+      .travis img {
+        margin:10px;
+      }
+      #forkme {position: fixed; top: 0; right: 0; z-index: 10000;}
+    </style>
+    <link rel="stylesheet" href="/static/bootstrap-old/css/bootstrap-responsive.css"/>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    {% block head_extra %}
+    {% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/beige">logout</a>
+
+        </div>
+      </div>
+    </div>
+
+<div class="container-fluid">
+    {% block container %}
+    <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="utils">
+                <p class="readthedocs">
+                  <a href="" target="_blank">
+                    <img src="">
+                  </a>
+                </p>
+                <p class="travis">
+                  <a href="" target="_blank">
+                    <img src="" />
+                  </a>
+                </p>
+              </li>
+              <li class="nav-header">{% trans "Transaction Report list" %}</li>
+              {% block sidebar %}
+
+
+    <ul class="nav nav-list">
+        <li>
+            {% include "model_report/includes/report_nav.html" %}
+       </li>
+    </ul>
+              {% endblock %}
+            </ul>
+          </div>
+        </div>
+        <div class="span9">
+        {% block content %}
+        {% endblock %}
+        </div>
+    </div>
+    {% endblock %}
+</div>
+
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36200991-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

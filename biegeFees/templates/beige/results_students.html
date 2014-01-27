@@ -1,0 +1,104 @@
+{% extends "beige/dashboard.html" %}
+
+{%block title%}<title>Payment | Search Result</title> {%endblock title%}
+
+
+{% block content %}
+
+<div class="panel panel-danger">
+<div class="panel-heading"><h4> Search Results ({{student_|length}}) found <b>{% ifnotequal school_ '' %}{{school_}} {% else %} {{iterm}} {% endifnotequal %}</b></h4> </div>
+  <div class="panel-body">
+   <form class="form-horizontal" role="form" action="/beige/st-search/" method="GET">
+ 
+ 
+ <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">School</label>
+    <div class="col-sm-6"> 
+<select class="form-control"  name="school">
+  <option selected="selected" disabled >-Select School-</option>
+   {% for sch in schools %}
+ <option value="{{sch.schoolName}}">{{sch.schoolName}} </option>
+{% endfor %}
+   </select>  
+  </div>
+  </div>
+
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">Student ID</label>
+    <div class="col-sm-6">
+      <input type="text" name="q" class="form-control"  placeholder="Search by Student ID">
+    </div>
+  </div>
+ <button class="btn btn-lg btn-danger btn-block" style="width:200px; margin-left:410px; margin-top:-80px;" type="submit" value="">Find Student </button>
+</form>
+<div class="" style="margin-top:5px;">
+ {% ifnotequal student_|length 0 %}
+   
+   <table class="table table-striped table-bordered table-condensed" style="margin-top:50px;">
+                     					 <thead>
+                       						 <tr>
+                              
+                               				 <th> <b  style  = " color:brown; position:relative;margin-left:10px;"><h> Student ID </h> </b></th>
+                                   
+                                         		 <th><b style  = "color:brown;  position:relative;margin-left:10px;"><h>Full Name</h></b> </th>
+                                         		 
+                                         		 <th><b  style  = "color:brown;  position:relative;margin-left:10px;"><h>Transaction details</h></b> </th>
+                                         		 
+                                         		 
+						
+                                             			</tr>
+                                                         </thead>
+
+
+								
+    								
+    								<tbody>
+      									{% for std in student_ %}
+      									<tr>
+        									<th><h><span class="muted"> </span>{{std.studentID}} &nbsp</h></th>
+        									<th><h><span class="muted"></span>{{std.fullnameC}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span> <a href="/beige/std_details/{{std.pk}}/True/" > view </a>&nbsp</h></th>
+        									
+      									</tr>
+      									
+      									{% endfor %}
+      									
+    								</tbody>
+    								
+    								
+  							</table>
+  
+  <div class="pagination-centered"  style="margin-left:150px;">
+    <span class="step-links">
+        {% if student_.has_previous %}
+            <a href="?page={{ student_.previous_page_number }}">previous</a>
+        {% endif %}
+        
+        <span class="current">
+            Page {{ student_.number }} of {{ student_.paginator.num_pages }}.
+        </span>
+
+        {% if student_.has_next %}
+            <a href="?page={{ student_.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div> 
+
+{% endifnotequal %}      
+  
+ </div>  
+ 
+
+</div>
+</div>
+
+  
+ 
+
+</div>
+</div>
+
+{% endblock %}
+
+
+
