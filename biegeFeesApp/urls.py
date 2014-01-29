@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
 from biegeFeesApp.views import *
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from model_report import report
 report.autodiscover()
@@ -56,3 +57,5 @@ urlpatterns = patterns('',
 		 
 		  
 )
+
+urlpatterns += staticfiles_urlpatterns()

@@ -141,13 +141,16 @@ INSTALLED_APPS = (
     #'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'import_export',
     'grappelli',
     'biegeFeesApp',
+    
     # Uncomment the next line to enable the admin:
      'django.contrib.admin',
      'countries',
      'model_report',
      'django_evolution',
+     
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

@@ -18,3 +18,9 @@ Timeline: 27-01-2013
 3. bulk upload of students at schools
 4. Shouldn't add/edit transactions from admin
 5. Shouldn't add/edit users from admin
+
+Timeline: 29-01-2013
+1. print page after transaction
+2. bulk upload of students
+3. edit/update student's details
+

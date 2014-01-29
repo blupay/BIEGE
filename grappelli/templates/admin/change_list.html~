@@ -144,13 +144,8 @@
     {% if has_add_permission %}
         <ul class="grp-object-tools">
             {% block object-tools-items %}
-           {% ifnotequal request.path  '/admin/biegeFeesApp/schoolusers/' %}
-          {% ifnotequal request.path  '/admin/biegeFeesApp/beigeuser/' %}  
-          {% ifnotequal request.path '/admin/biegeFeesApp/beigetransaction/' %} 
-           <li><a href="add/{% if is_popup %}?_popup=1{% endif %}" class="grp-add-link grp-state-focus">{% blocktrans with cl.opts.verbose_name as name %}Add {{ name }}{% endblocktrans %}</a></li>
-         {% endifnotequal %} 
-         {% endifnotequal %}
-         {% endifnotequal %}  
+          {% ifnotequal request.path  '/admin/biegeFeesApp/beigeuser/' %}  {% ifnotequal request.path '/admin/biegeFeesApp/beigetransaction/' %}  <li><a href="add/{% if is_popup %}?_popup=1{% endif %}" class="grp-add-link grp-state-focus">{% blocktrans with cl.opts.verbose_name as name %}Add {{ name }}{% endblocktrans %}</a></li>
+         {% endifnotequal %} {% endifnotequal %}  
          {% endblock %}
         </ul>
     {% endif %}

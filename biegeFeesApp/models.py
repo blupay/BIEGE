@@ -8,7 +8,7 @@ import datetime,random, sha, hashlib
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 # Create your models here.
-
+from import_export.admin import ImportExportMixin
 
 class Programme(models.Model):
 	name = models.CharField(max_length=20,help_text ="Programme Name")
@@ -69,14 +69,21 @@ class Branch(models.Model):
       last_updated_by = models.CharField(max_length = 50,blank=True, null = True)
       date_added = models.DateTimeField(auto_now_add=True)
       date_updated = models.DateTimeField(auto_now=True)
-
+	
+	
+      def link(self):
+        	url = '/admin/biegeFeesApp/beigeuser/?branch__branch_name=%s'%(self.branch_name)
+        	return '<a href="/admin/biegeFeesApp/beigeuser/?branch__branch_name=%s"  target="_blank">link</a>' %(self.branch_name)
+      link.allow_tags = True   
+       
       class Meta:
                 verbose_name = "Branch"
                 verbose_name_plural ="Branches"
 
       def Number_of_users(self):
-		return "%s" %(self.beigeuser_set.count())
-
+		return ' %s <a href="/admin/biegeFeesApp/beigeuser/?branch__branch_name=%s"  target="_blank">view</a>' %(self.beigeuser_set.count(),self.branch_name)
+      Number_of_users.allow_tags = True 
+      
       def __unicode__(self):
               return "%s" %(self.branch_name)
 
@@ -104,6 +111,9 @@ class BeigeUser(models.Model):
               return '%s, %s' %(self.last_name,self.first_name)
         def __unicode__(self):
               return "%s" %(self.username)
+        def last_login(self):
+             user_log = User.objects.get(username=self.username)
+             return '%s' %(user_log.last_login.strftime("%b %d, %Y, %I:%M %p"))
 
 class Students(models.Model):
       studentID = models.CharField(max_length=10,blank=True,null=True)
@@ -212,18 +222,19 @@ class SchoolUsers(models.Model):
 
 
 class Fees_category_school(models.Model):
-       School = models.ForeignKey(BeigeSchool,blank=False,null=False)
+       School = models.ForeignKey(BeigeSchool,related_name ='feesCat',blank=False,null=False)
        Name = models.CharField(max_length= 40, blank=False, null = False)
        expected_amount = models.FloatField(blank=False, null=False)
        from_date = models.DateField()
        to_date    = models.DateField()
+       status   = models.BooleanField('show',default=False, help_text="")
        created_by = models.CharField(max_length = 30, blank = False, null= False)
        last_updated_by = models.CharField(max_length = 30,blank = False, null= False)
        date_created = models.DateTimeField(auto_now_add=True)
        date_updated = models.DateTimeField(auto_now=True)
        
        def __unicode__(self):
-		return '%s-%s' %(self.School.schoolName_short,self.Name)
+		return '%s-%s' %(self.School.schoolName,self.Name)
        
        class Meta:
                 verbose_name = "Fees Category By School"
@@ -241,7 +252,7 @@ class BeigeTransaction(models.Model):
 
 	feesType = models.ForeignKey(FeesCategory,blank=False,null=False)
 	otherFeesType = models.CharField(max_length=20,blank=True, null=True, default=None,help_text ="Enter Other FeesType if applicable")
-	amount = models.FloatField('Amount(GHS)',null = False, default = 0.0)
+	amount = models.FloatField('Amount(GHS)',null = False,blank=False, default = 0.0)
 	payment_by = models.CharField(max_length=50, blank = True, null =True, default = 'Self' )
 	date_added = models.DateTimeField(auto_now_add=True)
         date_updated = models.DateTimeField(auto_now=True)		
@@ -277,10 +288,10 @@ class StudentInline(admin.TabularInline):
 
 	
 class BeigeUserAdmin(admin.ModelAdmin):
-	list_display = ('username','first_name','last_name','email','mobile_number','branch','added_by','date_added','last_updated_by','date_updated',)
+	list_display = ('username','first_name','last_name','email','mobile_number','branch','last_login','added_by','date_added','last_updated_by','date_updated',)
 	ordering = ['-date_added']
         list_filter = ('branch__branch_name',)
-        search_fields = ('username','mobile_number',)
+        search_fields = ('username','mobile_number','first_name','last_name',)
         readonly_fields = ('added_by','last_updated_by',)
         obj = BeigeUser()
         #obj_auth = User()
@@ -290,7 +301,9 @@ class BeigeUserAdmin(admin.ModelAdmin):
              if  obj.added_by == None:
                         obj.added_by = request.user.username
              obj.save()
-
+        def __init__(self, *args, **kwargs):
+		super(BeigeUserAdmin,self).__init__(*args, **kwargs)
+		self.list_display_links = (None,)
 
 
 
@@ -298,7 +311,7 @@ class BeigeBranchAdmin(admin.ModelAdmin):
        list_display = ('edit','branch_name','tel','Number_of_users','added_by','date_added','last_updated_by','date_updated',)
        ordering = ['-date_added']
        list_filter = ('date_added','added_by',)
-       search_fields = ('name',)
+       search_fields = ('branch_name',)
        readonly_fields = ('added_by','last_updated_by',)
        obj = Branch()
        def save_model(self, request,obj,form,change):
@@ -306,14 +319,17 @@ class BeigeBranchAdmin(admin.ModelAdmin):
              if  obj.added_by == None:
                  obj.added_by= request.user.username
              obj.save()
-             
+       
              
 class SchoolUserAdmin(admin.ModelAdmin):
-	list_display = ('edit','username','first_name','last_name','email','School','date_added','date_updated',)
+	list_display = ('username','first_name','last_name','email','School','date_added','date_updated',)
 	ordering = ['-date_added']
         list_filter = ('School__schoolName',)
         search_fields = ('username','first_name')
         readonly_fields = ('School',)
+        def __init__(self, *args, **kwargs):
+		super(SchoolUserAdmin,self).__init__(*args, **kwargs)
+		self.list_display_links = (None,)
 
 class SchoolFeesCategoryAdmin(admin.ModelAdmin):
 	list_display = ('School','Name','from_date','to_date','created_by','date_created','last_updated_by','date_updated',)
@@ -360,7 +376,7 @@ class BeigeSchoolAdmin(admin.ModelAdmin):
 
 
 
-class StudentsAdmin(admin.ModelAdmin):
+class StudentsAdmin(ImportExportMixin,admin.ModelAdmin):
        
         list_display =('studentID','schoolID','surname','othername','gender','Age','email','mobile_number','programme','Nationality','residential_address','date_added','date_updated')
 	list_filter = ('gender','programme')
@@ -401,10 +417,12 @@ class BeigeTransactionAdmin(admin.ModelAdmin):
 
         fieldsets = ( (None, {'fields':('transactionID','studentID','tellerID','form','feesType','otherFeesType','amount')}),)
 
-        readonly_fields   = ('transactionID','studentID','tellerID')
+        readonly_fields   = ('transactionID','studentID','tellerID','form','feesType','otherFeesType','amount',)
         date_hierarchy    = 'date_added'
         list_per_page = 50
-        
+        def __init__(self, *args, **kwargs):
+		super(BeigeTransactionAdmin,self).__init__(*args, **kwargs)
+		self.list_display_links = (None,)
         
         obj = BeigeTransaction()
         def save_model(self, request,obj,form,change):

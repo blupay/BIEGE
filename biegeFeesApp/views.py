@@ -630,7 +630,7 @@ def student_detail(request, id, showDetails=False):
       	form = TransForm(request.POST)
       	
       	try:
-        	fees = Fees_category_school.objects.filter(School=student_.schoolID)
+        	fees = Fees_category_school.objects.filter(School=student_.schoolID,status = True)
         	fees_all = FeesCategory.objects.all()
         except Fees_category_school.DoesNotExist:
                 pass
@@ -755,12 +755,22 @@ def school_detail(request, id, showDetails=False):
 		return HttpResponseRedirect('/beige/login')
       if request.user.username == '' and request.user.is_superuser == False:
       		return HttpResponseRedirect('/')
+      
       school= BeigeSchool.objects.get(pk=id)
       request.session["sch"] = school
-      students = Students.objects.filter(schoolID=school)
-      trans    = BeigeTransaction.objects.filter(studentID__schoolID=school).order_by('-date_added')[:10]
-      paginator = Paginator(students, 10)
-      page = request.GET.get('page')
+      students 		= Students.objects.filter(schoolID=school)
+      trans    		= BeigeTransaction.objects.filter(studentID__schoolID=school).order_by('-date_added')[:10]
+      get_schoolFees_setup = Fees_category_school.objects.filter(School=school,status = True)
+      trans_latest 	= BeigeTransaction.objects.filter(studentID__schoolID=school)
+      amt = 0.0
+      get_amt =[]
+      for amt in trans_latest:
+           get_amt.append(amt.amount) 
+      for amt in get_amt:
+          amt += amt
+      print amt
+      paginator 	= Paginator(students, 10)
+      page 		= request.GET.get('page')
       try:
             students = paginator.page(page)
       except PageNotAnInteger:
@@ -771,8 +781,8 @@ def school_detail(request, id, showDetails=False):
             students = paginator.page(paginator.num_pages)
       iterm=''		#schools = BeigeSchool.objects.all()
       return render_to_response('beige/school_details.html',
-      				{'school':school, 'iterm':iterm,
-				'students':students,'trans':trans,
+      				{'school':school, 'iterm':iterm,'trans_latest':trans_latest,
+				'students':students,'trans':trans,'amt':amt,
       				'user':request.user})
 
 '''STUDENT SEARCH AT BIEGE'''
