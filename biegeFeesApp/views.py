@@ -90,8 +90,8 @@ def student_records(request):
 class RegisterForm1(ModelForm):
 	class Meta:
 		model = BeigeSchool
-		exclude = ['datecreated','schoolName','postalAddress','phoneNumber','schoolType','location','dateupdated','schoolID']
-        	fields  = ('programmes',)
+		exclude = ['datecreated','programmes','schoolName','postalAddress','phoneNumber','schoolType','location','dateupdated','schoolID']
+        	fields  = ()
 
 
 #class RegisterForm2(ModelForm):
@@ -162,9 +162,9 @@ def school_reg(request):
 	    worker.phoneNumber =  request.POST['mobile']
             worker.location = request.POST['loc']
             worker.schoolType = request.POST['type']
-            print form1.cleaned_data['programmes']
-            get_programmes  =  Programme.objects.filter(name = form1.cleaned_data['programmes'] )
-	    worker.programmes = get_programmes
+            #print form1.cleaned_data['programmes']
+           # get_programmes  =  Programme.objects.filter(name = form1.cleaned_data['programmes'] )
+	    #worker.programmes = get_programmes
            
             worker.save()
 	    #form1.username = "gggg"
@@ -179,7 +179,7 @@ def school_reg(request):
             #request.session["p_k"] = new_user.pk
 	    #p_k="on"
 	    #us_n = "on"
-	    return HttpResponseRedirect('/beige/adduser')
+	    return HttpResponseRedirect('/beige/add_school_user')
     else:
             #if us_n !="" and request.user.is_superuser:
 		#superuser = "Yes"
@@ -436,7 +436,7 @@ def register(request):
                      #counT = request.POST['count']
                      print counT.iso
                      reg_student.Nationality = counT
-                     reg_student.programme  = request.POST['prog']
+                     #reg_student.programme  = request.POST['prog']
                      reg_student.residential_address  = request.POST['address']
                      print currentUser.School
 		     print reg_student.schoolID
@@ -519,9 +519,9 @@ def beige_login(request):
 	invalidMsg = ''
 	sess_data = ''
         already_logged_in=''#william made changes to your code here...had errors to added this to work
-	if request.user.username != '':
-		already_logged_in = 'You are already logged in.'
-		return HttpResponseRedirect('/beige/beige/dashboard')
+	#if request.user.username != '':
+		#already_logged_in = 'You are already logged in.'
+		#return HttpResponseRedirect('/beige/beige/dashboard')
 	
 	if request.method == 'POST':
    	        uname = request.POST['username']	
@@ -628,35 +628,59 @@ def student_detail(request, id, showDetails=False):
 		return HttpResponseRedirect('/beige/login')
       	student_        = Students.objects.get(pk=id)
       	form = TransForm(request.POST)
-        fees = FeesCategory.objects.all()
+      	
+      	try:
+        	fees = Fees_category_school.objects.filter(School=student_.schoolID)
+        	fees_all = FeesCategory.objects.all()
+        except Fees_category_school.DoesNotExist:
+                pass
         popup =""
         amount_error =''
 	getFee = ""
 	getAmt = ""
+	get_Teller = ''
+	get_Student = ''
 	newpay = None
+	is_allowed = ''
 	try:
 	    if request.session["newpay"] != None:
 		newpay = request.session["newpay"]
 		request.session["newpay"] = None
+            #if request.session['error'] != '':
+            #error = request.session["error"]
+                #request.session['error'] = ''
             if request.session["get_fee"] != "":
 		getFee = request.session["get_fee"]
-		request.session["get_fee"] = ""
+		#request.session["get_fee"] = ""
 	    if request.session["amt"] != "":
 		getAmt = request.session["amt"]
-		request.session["amt"] = ""
+		#request.session["amt"] = ""
     	    if request.session["modal"] == 'on':
 		popup = "modal"		
 	        request.session["modal"]=""
+	    if request.session['get_teller'] !='':
+	       get_Teller =request.session['get_teller']
+	       #request.session['get_teller'] = ''
+	    if request.session['get_student'] != '':
+	       get_Student = request.session['get_student'] 
+	       #request.session['get_student']  = ''
+	    
         except KeyError:
 		request.session["modal"] = ""
 		request.session["get_fee"] = ""
 		request.session["amt"] = ""
 		request.session["newpay"] = None
+	try:
+		get_is_allowed = BeigeUser.objects.get(username=request.user.username)
+	except BeigeUser.DoesNotExist:
+		is_allowed = "no"
+		
 	if request.method == 'POST':
 		if request.POST.get("preConfirm") == "preConfirm":
 			if form.is_valid():
                         #form.save()
 				newpay = BeigeTransaction()
+				
                         	try:
                              		get_fee = FeesCategory.objects.get(name=request.POST['fee'])
 			     		request.session["get_fee"] = get_fee	
@@ -666,29 +690,52 @@ def student_detail(request, id, showDetails=False):
                               		amount_error = 'on'
                               		return HttpResponseRedirect('/beige/st_details/'+str(student_.pk)+'/True/')
 				newpay.amount = request.POST['amt']
-				newpay.tellerID = request.user.username
+				try:
+					newpay.tellerID = BeigeUser.objects.get(username=request.user.username)
+					request.session['get_teller'] = newpay.tellerID
+				except BeigeUser.DoesNotExist:
+				        
+				        request.session['get_teller'] = request.user.username 
 				newpay.feesType = get_fee
                         	request.session["get_fee"] = get_fee
+                        	print request.session["get_fee"]
 			        request.session["amt"] = request.POST['amt']
 		        	#newpay.otherFeesType = form.cleaned_data['fessType']
 			        #newpay.form = forms.cleaned_data['form']
                                 print student_.studentID
+                                try:
+                                        if request.POST['paid'] == '':
+                                           	request.session['paidby'] = 'Self'
+                                        else:
+                                		request.session['paidby'] = request.POST['paid']
+                                except KeyError:
+                                        request.session['paidby'] = 'Self'
 			        newpay.studentID = student_
+			        request.session['get_student'] =newpay.studentID
 			        #newpay.transactionID = forms.cleaned_data['transactionID']
-			        request.session["newpay"] = newpay
+			        #request.session["newpay"] = newpay
                        		request.session["modal"] = 'on' 
-				newpay.save()
+				#newpay.save()
 				print "galore"
 				return HttpResponseRedirect('/beige/st_details/'+str(student_.pk)+'/True/')
 			else:
-				pass
+				return HttpResponseRedirect('/beige/st_details/'+str(student_.pk)+'/True/')
 		elif request.POST.get("Confirm") == "Confirm":
-
-		        #newpay  = BeigeTransaction()
-			#newpay.save()
+		        newpay  = BeigeTransaction()
+		        print request.session["get_fee"]
+		        newpay.amount= request.session["amt"]
+		        try:
+		        	newpay.tellerID =  BeigeUser.objects.get(username=request.user.username)
+		        	print 1
+		        except BeigeUser.DoesNotExist:
+		                return HttpResponseRedirect('/beige/st_details/'+str(student_.pk)+'/True/')
+		        newpay.feesType=getFee
+		        newpay.studentID= get_Student
+		        newpay.payment_by = request.session['paidby']
+			newpay.save()
 		        print "galore galore galore"
-			return HttpResponseRedirect('/beige/st_details/'+str(student_.pk)+'/True/')
-        return render_to_response('beige/make_payment.html',{'popup':popup,'amount_error':amount_error,'request':request.path,'getFee':getFee,'getAmt':getAmt,'fees':fees,'form':form,'student_':student_,'user':request.user})
+			return HttpResponseRedirect('/beige/std_details/'+str(student_.pk)+'/True/')
+        return render_to_response('beige/make_payment.html',{'popup':popup,'amount_error':amount_error,'request':request.path,'fees_all':fees_all,'is_allowed':is_allowed,'getFee':getFee,'getAmt':getAmt,'fees':fees,'form':form,'student_':student_,'user':request.user})
 
 
 def payment(request):
@@ -711,6 +758,7 @@ def school_detail(request, id, showDetails=False):
       school= BeigeSchool.objects.get(pk=id)
       request.session["sch"] = school
       students = Students.objects.filter(schoolID=school)
+      trans    = BeigeTransaction.objects.filter(studentID__schoolID=school).order_by('-date_added')[:10]
       paginator = Paginator(students, 10)
       page = request.GET.get('page')
       try:
@@ -724,7 +772,7 @@ def school_detail(request, id, showDetails=False):
       iterm=''		#schools = BeigeSchool.objects.all()
       return render_to_response('beige/school_details.html',
       				{'school':school, 'iterm':iterm,
-				'students':students,
+				'students':students,'trans':trans,
       				'user':request.user})
 
 '''STUDENT SEARCH AT BIEGE'''
@@ -745,7 +793,7 @@ def student_search_beige(request,term):
 		        	page = request.GET.get('page')
                                 term =""
                         except Students.DoesNotExist:
-                               return HttpResponseRedirect('/beige/school_details/get_school.pk/True/')
+                               return HttpResponseRedirect('/beige/school_details/'+str(get_school.pk)+'/True/')
         else:
                 get_school = request.session["sch"]
                 print request.session['item']
@@ -768,14 +816,40 @@ def student_search_beige(request,term):
 	
 '''PAYMENT DETIALS'''
 def payment_detail(request,id, showDetails=False):
+	popup = ''
+	this_transaction =''
         if request.user.username == '':
 		return HttpResponseRedirect('/beige/login')
+	try:
+		if request.session['mod'] =='on':
+		    popup = 'modal'
+		    request.session['mod'] = '' 
+		    this_transaction = request.session['std']
+		    request.session['std'] = ''
+		    
+	except KeyError:
+      		request.session["mod"] = ''
         student_ = Students.objects.get(pk = id)
-        student_trans = BeigeTransaction.objects.filter(studentID=student_)  
-	return render_to_response("beige/search_result.html",{'student_':student_,'student_trans':student_trans,'request':request.path,'user':request.user})
+        student_trans = BeigeTransaction.objects.filter(studentID=student_).order_by('-date_added')[:5]
+        paginator = Paginator(student_trans, 10)
+	page = request.GET.get('page')
+	try:
+            	student_trans = paginator.page(page)
+      	except PageNotAnInteger:
+    		student_trans = paginator.page(1)
+        except EmptyPage:
+        	# If page is out of range (e.g. 9999), deliver last page of results.
+        	student_trans = paginator.page(paginator.num_pages)
+      
+	return render_to_response("beige/search_result.html",{'popup':popup,'student_':student_,'student_trans':student_trans,'this_transaction':this_transaction,'request':request.path,'user':request.user})
 	
                 		
-
+def print_trans(request,id, showDetails=False):
+     request.session['mod'] = 'on'
+     student_trans = BeigeTransaction.objects.get(pk = id)
+     request.session['std'] = student_trans
+     student = Students.objects.get(studentID=student_trans.studentID.studentID)
+     return HttpResponseRedirect('/beige/std_details/'+str(student.pk)+'/True/')
 
 
 	
@@ -887,4 +961,30 @@ def do_logout(request):
 		request.session["sess_uname"] = ''
 		request.user.username == ''
 		return HttpResponseRedirect('/beige/login')
+
+
+#excel upload
+
+
+class ImportExcelForm(forms.Form):
+    file  = forms.FileField(label= "Choose excel to upload") 
+    
+def test_flowcell(request):
+    c = RequestContext(request, {'other_context':'details here'})
+    if request.method == 'POST': # If the form has been submitted...
+        form = ImportExcelForm(request.POST,  request.FILES) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            excel_parser= ExcelParser()
+            success, log  = excel_parser.read_excel(request.FILES['file'] )
+            if success:
+                return redirect(reverse('admin:index') + "pages/flowcell_good/") ## redirects to aliquot page ordered by the most recent
+            else:
+                errors = '* Problem with flowcell * <br><br>log details below:<br>' + "<br>".join(log)
+                c['errors'] = mark_safe(errors)
+        else:
+            c['errors'] = form.errors 
+    else:
+        form = ImportExcelForm() # An unbound form
+    c['form'] = form
+    return render_to_response('school/file_upload.html')  
 

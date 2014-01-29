@@ -147,6 +147,7 @@ INSTALLED_APPS = (
      'django.contrib.admin',
      'countries',
      'model_report',
+     'django_evolution',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

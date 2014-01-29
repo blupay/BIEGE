@@ -21,7 +21,8 @@ class Programme(models.Model):
 
 class BeigeSchool(models.Model):
 	schoolID = models.CharField(max_length=10,blank=False,null=False)
-	schoolName = models.CharField(max_length=30,blank=False,null=False)
+	schoolName = models.CharField(max_length=50,blank=False,null=False)
+	schoolName_short = models.CharField('Abbreviation(School_Name)',max_length=20, blank= True, null = True)
 	postalAddress = models.TextField(blank=False,null=False)
 	phoneNumber = models.CharField(max_length=15,blank=False,null=False)
 	location = models.CharField(max_length=30,blank=False,null=False)
@@ -65,6 +66,7 @@ class Branch(models.Model):
       address   = models.TextField(blank=True,null=True)
       tel       = models.TextField(help_text= "separate by commas")
       added_by   = models.CharField(max_length = 50,blank=True, null = True)
+      last_updated_by = models.CharField(max_length = 50,blank=True, null = True)
       date_added = models.DateTimeField(auto_now_add=True)
       date_updated = models.DateTimeField(auto_now=True)
 
@@ -78,7 +80,8 @@ class Branch(models.Model):
       def __unicode__(self):
               return "%s" %(self.branch_name)
 
-
+      def edit(self):
+          return 'Click to edit'
 	
 
 
@@ -97,7 +100,8 @@ class BeigeUser(models.Model):
 	class Meta:
                 verbose_name = "BeigeUser"
                 verbose_name_plural ="BeigeUsers"
-
+        def  fullName(self):
+              return '%s, %s' %(self.last_name,self.first_name)
         def __unicode__(self):
               return "%s" %(self.username)
 
@@ -195,7 +199,9 @@ class SchoolUsers(models.Model):
 
     
         
-
+        def edit(self):
+                return 'Click to edit'
+          
         def __unicode__(self):
 		return self.username
      
@@ -204,11 +210,29 @@ class SchoolUsers(models.Model):
                 verbose_name = "School User"
                 verbose_name_plural ="School Users"
 
+
+class Fees_category_school(models.Model):
+       School = models.ForeignKey(BeigeSchool,blank=False,null=False)
+       Name = models.CharField(max_length= 40, blank=False, null = False)
+       expected_amount = models.FloatField(blank=False, null=False)
+       from_date = models.DateField()
+       to_date    = models.DateField()
+       created_by = models.CharField(max_length = 30, blank = False, null= False)
+       last_updated_by = models.CharField(max_length = 30,blank = False, null= False)
+       date_created = models.DateTimeField(auto_now_add=True)
+       date_updated = models.DateTimeField(auto_now=True)
+       
+       def __unicode__(self):
+		return '%s-%s' %(self.School.schoolName_short,self.Name)
+       
+       class Meta:
+                verbose_name = "Fees Category By School"
+                verbose_name_plural ="Fees Category By Schools"
 	
 class BeigeTransaction(models.Model):
 	transactionID = models.CharField(max_length = 15, unique = True)
 	studentID = models.ForeignKey(Students,blank=False,null=False)
-	tellerID = models.CharField(max_length = 10)
+	tellerID = models.ForeignKey(BeigeUser,blank=True,null=True)
 	form = models.CharField(max_length=6, choices = (("FORM 1", "FORM 1"), 
                                                     ("FORM 2", "FORM 2"),
 						    ("FORM 3", "FORM 3"),
@@ -218,6 +242,7 @@ class BeigeTransaction(models.Model):
 	feesType = models.ForeignKey(FeesCategory,blank=False,null=False)
 	otherFeesType = models.CharField(max_length=20,blank=True, null=True, default=None,help_text ="Enter Other FeesType if applicable")
 	amount = models.FloatField('Amount(GHS)',null = False, default = 0.0)
+	payment_by = models.CharField(max_length=50, blank = True, null =True, default = 'Self' )
 	date_added = models.DateTimeField(auto_now_add=True)
         date_updated = models.DateTimeField(auto_now=True)		
 	
@@ -232,7 +257,8 @@ class BeigeTransaction(models.Model):
                 	self.transactionID = "%s%s%s%s%s" %('BEI',id_gen,id_gen1,id_gen2,'TXN')
 			return self.transactionID
                 
-           
+        def branch(self):
+             return self.tellerID.branch.branch_name
 
 	def __unicode__(self):
               return "%s-%s" %(self.transactionID,self.tellerID)
@@ -251,15 +277,17 @@ class StudentInline(admin.TabularInline):
 
 	
 class BeigeUserAdmin(admin.ModelAdmin):
-	list_display = ('username','first_name','last_name','email','mobile_number','branch','added_by','last_updated_by','date_added','date_updated',)
+	list_display = ('username','first_name','last_name','email','mobile_number','branch','added_by','date_added','last_updated_by','date_updated',)
 	ordering = ['-date_added']
         list_filter = ('branch__branch_name',)
         search_fields = ('username','mobile_number',)
         readonly_fields = ('added_by','last_updated_by',)
         obj = BeigeUser()
+        #obj_auth = User()
         def save_model(self, request,obj,form,change):
+             
              obj.last_updated_by = request.user.username
-             if  obj.added_by == "":
+             if  obj.added_by == None:
                         obj.added_by = request.user.username
              obj.save()
 
@@ -267,23 +295,39 @@ class BeigeUserAdmin(admin.ModelAdmin):
 
 
 class BeigeBranchAdmin(admin.ModelAdmin):
-       list_display = ('branch_name','tel','Number_of_users','added_by','date_added','date_updated',)
+       list_display = ('edit','branch_name','tel','Number_of_users','added_by','date_added','last_updated_by','date_updated',)
        ordering = ['-date_added']
        list_filter = ('date_added','added_by',)
        search_fields = ('name',)
-       readonly_fields = ('added_by',)
+       readonly_fields = ('added_by','last_updated_by',)
        obj = Branch()
        def save_model(self, request,obj,form,change):
-             if  obj.added_by == "":
+             obj.last_updated_by = request.user.username
+             if  obj.added_by == None:
                  obj.added_by= request.user.username
              obj.save()
+             
+             
 class SchoolUserAdmin(admin.ModelAdmin):
-	list_display = ('username','first_name','last_name','email','School','date_added','date_updated',)
+	list_display = ('edit','username','first_name','last_name','email','School','date_added','date_updated',)
 	ordering = ['-date_added']
+        list_filter = ('School__schoolName',)
+        search_fields = ('username','first_name')
+        readonly_fields = ('School',)
 
-
-
-
+class SchoolFeesCategoryAdmin(admin.ModelAdmin):
+	list_display = ('School','Name','from_date','to_date','created_by','date_created','last_updated_by','date_updated',)
+	ordering = ['-date_created']
+        list_filter = ('School__schoolName',)
+        #search_fields = ('username','first_name')
+        readonly_fields = ('created_by','last_updated_by',)
+        obj = Fees_category_school()
+        def save_model(self, request,obj,form,change):
+             
+             obj.last_updated_by = request.user.username
+             if  obj.created_by == "":
+                        obj.created_by = request.user.username
+             obj.save()
 
 class ProgrammeAdmin(admin.ModelAdmin):
        
@@ -348,7 +392,7 @@ class FeesCategoryAdmin(admin.ModelAdmin):
 
 class BeigeTransactionAdmin(admin.ModelAdmin):
        
-        list_display =('transactionID','studentID','school','tellerID','feesType','amount','date_added','date_updated')
+        list_display =('transactionID','studentID','school','branch','tellerID','payment_by','feesType','amount','date_added','date_updated')
 	list_filter = ('studentID__schoolID',)
 	search_fields = ('transactionID','^studentID__studentID','tellerID','form','feesType','otherFeesType')
 	
@@ -360,6 +404,13 @@ class BeigeTransactionAdmin(admin.ModelAdmin):
         readonly_fields   = ('transactionID','studentID','tellerID')
         date_hierarchy    = 'date_added'
         list_per_page = 50
+        
+        
+        obj = BeigeTransaction()
+        def save_model(self, request,obj,form,change):
+             if  obj.tellerID == "":
+                        obj.tellerID = request.user.username
+             obj.save()
 
 admin.site.register(BeigeUser,BeigeUserAdmin)
 admin.site.register(Branch,BeigeBranchAdmin)
@@ -369,4 +420,5 @@ admin.site.register(BeigeSchool,BeigeSchoolAdmin)
 admin.site.register(Students,StudentsAdmin)
 admin.site.register(FeesCategory,FeesCategoryAdmin)
 admin.site.register(BeigeTransaction,BeigeTransactionAdmin)
+admin.site.register(Fees_category_school,SchoolFeesCategoryAdmin)
 

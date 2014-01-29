@@ -80,6 +80,7 @@
       									
     								</tbody>
   							</table>
+  						
   							<div class="pagination-centered"  style="margin-left:300px;">
     <span class="step-links">
         {% if students.has_previous %}
@@ -95,13 +96,51 @@
         {% endif %}
     </span>
 </div>       
-  
+
   
   
   
   
   </div>
-  <div class="tab-pane" id="recent">..2.</div>
+  <div class="tab-pane" id="recent">
+  <p> Last <font color="red"> {{trans|length}} </font> transactions from all branches | <font color="red"> View all</font></p>
+  <table class="table table-striped table-bordered table-condensed" style="margin-top:5px;">
+                     					 <thead>
+                       						 <tr>
+                              
+                               				                                		 
+                                         		 <th><b  style  = "color:brown;  position:relative;margin-left:10px;"><h>Student ID</h></b> </th>
+                                         		 <th> <b  style  = " color:brown; position:relative;margin-left:10px;"><h>Full Name </h> </b></th>       
+                                         		 <th><b  style  = " color:brown; position:relative;margin-left:10px;"><h>Fees type </h></b> </th>
+                                         		 <th><b  style  = " color:brown; position:relative;margin-left:10px;"><h>Amount</h></b> </th>
+                                         		 <th><b  style  = " color:brown; position:relative;margin-left:10px;"><h>Branch</h></b> </th>
+                                         		 <th><b  style  = " color:brown; position:relative;margin-left:10px;"><h>Teller</h></b> </th>
+                                         		 <th><b  style  = " color:brown; position:relative;margin-left:10px;"><h>Date</h></b> </th>
+                                         		 
+						
+                                             			</tr>
+                                                         </thead>
+
+
+								<tbody>
+      									{% for trd in trans %}
+      									<tr>
+      									<th><h><span class="muted"> </span>{{trd.studentID.studentID}}&nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{trd.studentID.fullnameC}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{trd.feesType}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{trd.amount}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{trd.tellerID.branch}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{trd.tellerID.fullName}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{trd.date_added}} &nbsp</h></th>
+        									
+        									
+        									
+      									</tr>
+      									
+      									{% endfor %}
+      									
+    								</tbody>
+  							</table></div>
   <div class="tab-pane" id="stats">..3.</div>
   
 </div>

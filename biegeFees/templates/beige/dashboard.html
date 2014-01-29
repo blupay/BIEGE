@@ -7,7 +7,7 @@
 {% endblock title %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <meta name="author" content="Admin" >
+    <meta name="author" content="GOD'S LOVE" >
 
     <!-- Le styles -->
     <link href="/static/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
@@ -186,7 +186,7 @@ span.reference{
 
 
     </style>
-    <link href="../assets/css/bootstrap-responsive.css" rel="stylesheet">
+   <!-- <link href="../assets/css/bootstrap-responsive.css" rel="stylesheet"> -->
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -194,11 +194,11 @@ span.reference{
     <![endif]-->
 
     <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+   <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
       <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
                     <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
-                                   <link rel="shortcut icon" href="../assets/ico/favicon.png">
+                                   <link rel="shortcut icon" href="../assets/ico/favicon.png"> -->
   </head>
 
   <body class="container">
@@ -255,34 +255,41 @@ span.reference{
     <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-th-list"></span>&nbsp &nbsp School Registeration</h4>
     <p class="list-group-item-text">Set Up New School</p>
   </a>
-  {% else %}
-  
-  <a href="#" class="list-group-item" data-toggle="tooltip" data-original-title="Tooltip on right">	
-    <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-arrow-right"></span>&nbsp &nbsp School  Registeration</h4>
-    <p class="list-group-item-text" style="color:red;">You Don't have access</p>
-  </a>
-  
-  <div class="tooltip">
-2   <div class="tooltip-inner">
-3     Tooltip!
-4   </div>
-5   <div class="tooltip-arrow"></div>
-6 </div>
-  {% endifequal %}
   <a href="/beige/add_school_user/" class="list-group-item " style=" {% ifequal request '/beige/add_school_user/' %}background-color:#F5D8D4;{% endifequal %}">	
     <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-user"></span>&nbsp &nbsp School User</h4>
     <p class="list-group-item-text">Setup User for Schools</p>
   </a>
-  
-  <a href="/beige/add_beige_user/" class="list-group-item " style=" {% ifequal request '/beige/add_beige_user/' %}background-color:#F5D8D4;{% endifequal %}">	
+<a href="/beige/add_beige_user/" class="list-group-item " style=" {% ifequal request '/beige/add_beige_user/' %}background-color:#F5D8D4;{% endifequal %}">	
     <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-user"></span>&nbsp &nbsp Beige User</h4>
     <p class="list-group-item-text">Setup User for Beige Branches</p>
+  </a>  
+  
+  
+  {% else %}
+  <!--
+  <a href="#" class="list-group-item" data-toggle="tooltip" data-original-title="Tooltip on right">	
+    <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-arrow-right"></span>&nbsp &nbsp School  Registeration</h4>
+    <p class="list-group-item-text" style="color:red;">You Don't have access</p>
   </a>
+<a href="#" class="list-group-item " style=" {% ifequal request '/beige/add_school_user/' %}background-color:#F5D8D4;{% endifequal %}">	
+    <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-user"></span>&nbsp &nbsp School User</h4>
+     <p class="list-group-item-text" style="color:red;">You Don't have access</p>
+  </a>
+<a href="#" class="list-group-item "  style=" {% ifequal request '/beige/add_beige_user/' %}background-color:#F5D8D4;{% endifequal %}">	
+    <h4 class="list-group-item-heading" ><span class="glyphicon glyphicon-user"></span>&nbsp &nbsp Beige User</h4>
+     <p class="list-group-item-text" style="color:red;">You Don't have access</p>
+  </a>   
+  
+  -->
+  {% endifequal %}
+  
+  
+  
 </div>
 </div>
 </div>
 </div>
-<div class="col-sm-9 col-sm-offset-3 main" style="background:; margin-top:-350px;">
+<div class="col-sm-9 col-sm-offset-3 main" style="background:; {% ifequal user.is_superuser 1 %} margin-top:-350px; {% else %}  margin-top:-150px; {% endifequal %} ">
 {% block content %}
  <div class="panel panel-danger">
   <!-- Default panel contents -->
@@ -355,7 +362,7 @@ span.reference{
         {% endif %}
     </span>
 </div>       
-           
+          
     
     </div>
 <div class="col-sm-4">

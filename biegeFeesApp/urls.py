@@ -27,6 +27,7 @@ urlpatterns = patterns('',
                   url(r'^std_details/(?P<id>\d+)/((?P<showDetails>.*)/)?$', 'biegeFeesApp.views.payment_detail'),
  		  url(r'^st_details/(?P<id>\d+)/((?P<showDetails>.*)/)?$', 'biegeFeesApp.views.student_detail'),
                   url(r'^payment/$', 'biegeFeesApp.views.payment'),
+                  url(r'^print/(?P<id>\d+)/((?P<showDetails>.*)/)?$', 'biegeFeesApp.views.print_trans'),
 
 			#beige Change Password
 		  url(r'^changepass/$','biegeFeesApp.views.password_change'),

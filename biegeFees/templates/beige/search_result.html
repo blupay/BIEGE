@@ -4,7 +4,44 @@
 
 
 {% block content %}
+{% ifnotequal popup '' %}
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Payment details | Date : {{this_transaction.date_added}}</h4>
+      </div>
+      <div class="modal-body">
+        <p> Fees for </p>
+        ID : {{this_transaction.studentID.studentID}}<br>
+        School: {{this_transaction.studentID.schoolID.schoolName}} <br>
+        Full name : {{this_transaction.studentID.fullnameC}}<br>
+        Fee Type : {{this_transaction.feesType}}<br>            
+        Amount :  <font style="color:red;">GHS {{this_transaction.amount}}</font> <br>
+        Payment by: {{this_transaction.payment_by}}
+        <p>Attended to by: </p>
+         Name: {{this_transaction.tellerID.fullName}} <br>
+         Branch : {{this_transaction.branch}}
+        
+        
+        
+        
+        
+        </p>
+      </div>
+      <div class="modal-footer">
+      <form class="form-horizontal" role="form" action="." method="post">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" style="background-color:transparent;" onclick="javascript:window.print()" class="btn btn-default">print</button>
+      </form>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
+
+{% endifnotequal %}
 <div class="panel panel-danger">
 <div class="panel-heading">Summary Of Account Details </div>
   <div class="panel-body">
@@ -13,10 +50,21 @@
    <h4> <font color= "grey">School : </font> {{student_.schoolID.schoolName}}</h4>
    <button  class="btn btn-lg btn-danger btn-block" type="submit" style ="width:250px; margin-top:-90px; margin-left:540px;"value="">
   <a href="/beige/st_details/{{student_.pk}}/True/" style="color: white;" ><h2>Make Payment</h2></a></button>
+
+<ul class="nav nav-tabs" style="background-color:; margin-top:5px;">
+  <li class="active"><a href="#payments" data-toggle="tab" style="color:brown;">Recent Payments</a></li>
+  <li><a href="#account" data-toggle="tab">Account Details</a></li>
+  <li><a href="#report" data-toggle="tab">Reports</a></li>
+  
+</ul>  
+  <div class="tab-content">
+  <div class="tab-pane fade in active" id="payments">
+  
    <table class="table table-striped table-bordered table-condensed" style="margin-top:5px;">
                      					 <thead>
                        						 <tr>
                               
+                               				 <th> <b  style  = " color:brown; position:relative;margin-left:10px;"><h>NO. </h> </b></th>
                                				 <th> <b  style  = " color:brown; position:relative;margin-left:10px;"><h>Date </h> </b></th>
                                    
                                          		 <th><b style  = "color:brown;  position:relative;margin-left:10px;"><h>Payment type</h></b> </th>
@@ -33,12 +81,14 @@
 								<tbody>
       									{% for trans in student_trans %}
       									<tr>
-        									<th><h><span class="muted"> </span>{{trans.date_added}} &nbsp</h></th>
-        									<th><h><span class="muted"></span>{{trans.feesType}} &nbsp</h></th>
-        									<th><h><span class="muted"> </span>{{trans.amount}}&nbsp</h></th>
-        									<th><h><span class="muted"> </span> Branch name &nbsp</h></th>
+      									<th style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{forloop.counter}} &nbsp</h></th>
+        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{trans.date_added}} &nbsp</h></th>
+        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"></span>{{trans.feesType}} &nbsp</h></th>
+        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{trans.amount}}&nbsp</h></th>
+        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span> {{trans.branch}} &nbsp</h></th>
         									
-        									<th><h><span class="muted"> </span>{{trans.tellerID}}&nbsp</h></th>
+        									<th style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{trans.tellerID}}&nbsp</h></th>
+        									<th><h><span class="muted"> </span> <a href ="/beige/print/{{trans.pk}}/True/">print</a>&nbsp</h></th>
       									</tr>
       									
       									{% endfor %}
@@ -52,8 +102,28 @@
   							</table>
   
   
+  							<div class="pagination-centered"  style="margin-left:300px;">
+    <span class="step-links">
+        {% if  student_trans.has_previous %}
+            <a href="?page={{  student_trans.previous_page_number }}">previous</a>
+        {% endif %}
+        
+        <span class="current">
+            Page {{  student_trans.number }} of {{  student_trans.paginator.num_pages }}
+        </span>
+
+        {% if  student_trans.has_next %}
+            <a href="?page={{student_trans.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>       
   
   
+  </div>
+  <div class="tab-pane" id="account">..2.</div>
+  <div class="tab-pane" id="report">..3.</div>
+  
+</div>
  
 
 </div>

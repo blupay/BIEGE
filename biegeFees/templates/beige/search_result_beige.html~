@@ -30,7 +30,7 @@
   <div class="col-lg-6 col-lg-offset-6">
     <div class="input-group">
       
-      <input type="text" name="q" class="form-control"  placeholder="Search by student ID or Student Name">
+      <input type="text" name="q" class="form-control"  placeholder="{% ifequal iterm '' %}Search by student ID or Student Name {% else %} {{iterm}} {% endifequal %}">
       <span class="input-group-btn">
         <button class="btn btn-danger" type="submit">Go!</button>
       </span>
@@ -80,6 +80,8 @@
       									
     								</tbody>
   							</table>
+  							
+  							{% if is_paginated %}	
   							<div class="pagination-centered"  style="margin-left:300px;">
     <span class="step-links">
         {% if student_.has_previous %}
@@ -95,7 +97,7 @@
         {% endif %}
     </span>
 </div>       
-  
+  {% endif %}
   
   
   

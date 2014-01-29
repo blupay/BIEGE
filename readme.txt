@@ -12,3 +12,9 @@ logout
 change password
 print preview
 
+Timeline: 27-01-2013
+1. After school-setup: modal to indicate a successful save
+2. Add School initials field
+3. bulk upload of students at schools
+4. Shouldn't add/edit transactions from admin
+5. Shouldn't add/edit users from admin
