@@ -5,48 +5,123 @@
 
 {% block content %}
 
+
+{% ifnotequal pop '' %}
+
+
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#f2dede;">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"> THANKS</h4>
+      </div>
+      <div class="modal-body">
+        <p> <b style="color:;">{{sch}}</b> has been added succesfully <br>
+        
+        
+        
+        
+        
+        </p>
+      </div>
+      <div class="modal-footer">
+      
+     
+      <button  class="btn  btn-primary "  onclick="window.location.href='/beige/add_school_user/'" type="buttom" style =""value="">
+  Add System User</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        
+     
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+     {% endifnotequal %}
+
+
+
+
 <div class="panel panel-danger">
   <!-- Default panel contents -->
   <div class="panel-heading">School Registration </div>
   <div class="panel-body">
- <form class="form-horizontal"   action="." method="post" onsubmit="return selectAll()">
+  
+ <form class="form-horizontal"   action="." method="post" >
  
  <div class="form-group">
     <label for="inputEmail3" class="col-sm-2 control-label">School Name</label>
     <div class="col-sm-6">
-      <input type="text" name="schName" class="form-control" id="inputEmail3" placeholder="School Name">
+      <input type="text" name="schName"  required="required" title="Enter a valid school name" pattern =".{5,50}"  class="form-control" placeholder="School Name">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">Short Name</label>
+    <div class="col-sm-6">
+      <input type="text" name="shortName"  required= "required" title="Enter a valid Input"   pattern =".{2,15}" class="form-control" id="inputEmail3" placeholder="School's Short Name">
     </div>
   </div>
   <div class="form-group">
     <label for="inputEmail3" class="col-sm-2 control-label">Postal Address</label>
     <div class="col-sm-6">
-      <textarea name="postAddress" rows = "3" class="form-control" id="inputEmail3" placeholder="Postal Address"> </textarea>
+      <textarea name="postAddress" rows = "3" class="form-control"  placeholder="Postal Address"> </textarea>
     </div>
   </div>
   <div class="form-group">
     <label for="inputEmail3" class="col-sm-2 control-label">Mobile</label>
     <div class="col-sm-6">
-      <input type="tel" name="mobile" class="form-control" id="inputEmail3" placeholder="Mobile">
+      <input type="tel" name="mobile" required="required" title="10 characters required" pattern =".{10,10}" class="form-control"  placeholder="Mobile">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">Tel</label>
+    <div class="col-sm-6">
+      <input type="tel" name="Tel" required="required" title="10 characters required" pattern =".{10,10}" class="form-control"  placeholder="Tel No.">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+    <div class="col-sm-6">
+      <input type="email" name="e-mail" required="required" title="" class="form-control" placeholder="Email">
     </div>
   </div>
   
   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">Location</label>
+    <label for="inputEmail3"  class="col-sm-2 control-label">Location</label>
     <div class="col-sm-6">
-      <textarea name="loc" rows = "3" class="form-control" id="inputEmail3" placeholder="Location"> </textarea>
+     <input type="text" name="loc"  required= "required" title=""   pattern =".{2,30}" class="form-control"  placeholder="Location">
     </div>
   </div>
   
 <div class="form-group">
     <label for="inputEmail3" class="col-sm-2 control-label">School Type</label>
     <div class="col-sm-6"> 
-<select class="form-control"  name="type">
-  <option selected="selected" disabled >-Select-</option>
-  <option  value="Private">Private</option>
-  <option value="Public">Public</option>
+<select  title="Select an option" class="form-control"   name="type">
+  <option  value="Public">Public</option>
+  <option value="Private">Private</option>
    </select>  
   </div>
   </div>
+  
+ 
+  
+  <div id="itemRows">
+	<div class="form-group">
+	 <label for="inputEmail3"  class="col-sm-2 control-label">Location</label>
+	 <div class="col-sm-6">
+	<input class = "form-control" type="text" name="add_qty" />
+	</div>
+	 <input onclick="addRow(this.form);" type="button" class="btn btn-primary" value="Add row" />
+	</div>
+	
+	
+	</div>
+	
+	
+	
+	
+
   
     <!--  <div class="form-group">
      
@@ -72,15 +147,15 @@
    {% endfor %}
   </div> -->
   
- <fieldset>
-{{form1.as_p}}
+ 
+
 
 
  <div class="col-md-4">           
  <button class="btn btn-lg btn-primary btn-block" type="submit" value="">Register</button>
  </div>
  
- </fieldset>
+
 </form>
 </div>
 </div>

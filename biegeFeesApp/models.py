@@ -22,14 +22,16 @@ class Programme(models.Model):
 class BeigeSchool(models.Model):
 	schoolID = models.CharField(max_length=10,blank=False,null=False)
 	schoolName = models.CharField(max_length=50,blank=False,null=False)
-	schoolName_short = models.CharField('Abbreviation(School_Name)',max_length=20, blank= True, null = True)
+	schoolName_short = models.CharField('Abbreviation(School_Name)',max_length=15, blank= True, null = True)
 	postalAddress = models.TextField(blank=False,null=False)
-	phoneNumber = models.CharField(max_length=15,blank=False,null=False)
-	location = models.CharField(max_length=30,blank=False,null=False)
+	phoneNumber = models.CharField('mobile',max_length=15,blank=True,null=True)
+	tel_no     = models.CharField('tel',max_length=15,blank = True, null= True)
+	location = models.CharField(max_length=30,blank=True,null=True)
 	schoolType =  models.CharField(max_length=7, choices = (("Private", "Private"), 
                                                     ("Public", "Public")
                                                    ))
-        programmes = models.ManyToManyField(Programme, related_name = "program")
+        email_add = models.EmailField(blank = True, null= True)
+        programmes = models.ManyToManyField(Programme, blank = True, null = True, related_name = "program")
 	date_added=models.DateTimeField(auto_now_add=True,blank=True,null=True)
      	date_updated=models.DateTimeField(auto_now=True,blank=True,null=True)
 

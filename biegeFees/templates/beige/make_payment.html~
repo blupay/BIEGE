@@ -10,7 +10,7 @@
   <div class="panel-heading">New Transaction</div>
   <div class="panel-body">
   {% ifnotequal is_allowed '' %}
-  <div class="alert alert-danger fade in"> You Don't Permission to perform this transaction! contact System Administrator</div>
+  <div class="alert alert-danger fade in"> You Don't have Permission to perform this transaction! Contact System Administrator</div>
   
   {% endifnotequal %}
   <h4> <font color= "grey">Account Name : </font> {{student_.fullnameC}}</h4>
@@ -30,7 +30,7 @@
 {% endfor %}  
  {% else %}
   {% for c in fees_all %}
- <option value="{{c.name}}">{{c.name}} || {{c.expected_amount}} </option>
+ <option value="{{c.name}}">{{c.name}}  </option>
 {% endfor %}  
  {% endifnotequal %}
    </select>

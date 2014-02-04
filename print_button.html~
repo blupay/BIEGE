@@ -1,0 +1,51 @@
+<html>
+<head>
+	<title>Print Your Webpage</title>
+<script>
+function print_all_page()
+{
+	window.print();
+}
+function print_p2_m1()
+{
+	document.getElementsByTagName("button")[0].style.display = "none";
+	document.getElementsByTagName("button")[1].style.display = "none";
+	document.getElementsByTagName("button")[2].style.display = "none";
+	document.getElementById("p1").style.display = "none";
+	document.getElementById("p3").style.display = "none";
+	document.getElementById("p4").style.display = "none";
+	document.getElementById("p5").style.display = "none";
+	document.getElementById("p6").style.display = "none";
+	document.getElementById("p7").style.display = "none";
+	window.print();
+	document.getElementsByTagName("button")[0].style.display = "";
+	document.getElementsByTagName("button")[1].style.display = "";
+	document.getElementsByTagName("button")[2].style.display = "";
+	document.getElementById("p1").style.display = "";
+	document.getElementById("p3").style.display = "";
+	document.getElementById("p4").style.display = "";
+	document.getElementById("p5").style.display = "";
+	document.getElementById("p6").style.display = "";
+	document.getElementById("p7").style.display = "";
+}
+function print_p2_m2()
+{
+	var printEle = document.getElementById("p2");
+	var printWin = window.open("");
+	printWin.document.write(printEle.outerHTML)
+	printWin.print();
+	printWin.close();
+}
+</script>
+</head>
+<body>
+<button onclick="print_all_page()">Print All Page</button> <button onclick="print_p2_m1()">Print Paragraph 2<br>Method 1</button> <button onclick="print_p2_m2()">Print Paragraph 2<br>Method 2</button>
+<p id="p1">This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage.</p>
+<p id="p2" style="background:red;">This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage.</p>
+<p id="p3">This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage.</p>
+<p id="p4">This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage.</p>
+<p id="p5">This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage.</p>
+<p id="p6" style="background:green;">This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage.</p>
+<p id="p7">This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage. This is a trial webpage.</p>
+</body>
+</html>

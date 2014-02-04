@@ -12,7 +12,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title">Payment details | Date : {{this_transaction.date_added}}</h4>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" id="pp">
         <p> Fees for </p>
         ID : {{this_transaction.studentID.studentID}}<br>
         School: {{this_transaction.studentID.schoolID.schoolName}} <br>
@@ -33,7 +33,8 @@
       <div class="modal-footer">
       <form class="form-horizontal" role="form" action="." method="post">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="button" style="background-color:transparent;" onclick="javascript:window.print()" class="btn btn-default">print</button>
+        <button type="button" style="background-color:transparent;" onclick="print_popup()" class="btn btn-default">print</button>
+     
       </form>
       </div>
     </div><!-- /.modal-content -->
@@ -42,14 +43,14 @@
 
 
 {% endifnotequal %}
-<div class="panel panel-danger">
+<div id="p1" class="panel panel-danger">
 <div class="panel-heading">Summary Of Account Details </div>
   <div class="panel-body">
    <h4> <font color="grey">Student ID :</font> {{student_.studentID}}</h4>
    <h4> <font color="grey">Student :</font> {{student_.fullnameC}}</h4>
    <h4> <font color= "grey">School : </font> {{student_.schoolID.schoolName}}</h4>
-   <button  class="btn btn-lg btn-danger btn-block" type="submit" style ="width:250px; margin-top:-90px; margin-left:540px;"value="">
-  <a href="/beige/st_details/{{student_.pk}}/True/" style="color: white;" ><h2>Make Payment</h2></a></button>
+   <button  class="btn btn-lg btn-danger btn-block"  onclick="window.location.href='/beige/st_details/{{student_.pk}}/True/'" type="submit" style ="width:250px; margin-top:-90px; margin-left:540px;"value="">
+  <h2>Make Payment</h2></button>
 
 <ul class="nav nav-tabs" style="background-color:; margin-top:5px;">
   <li class="active"><a href="#payments" data-toggle="tab" style="color:brown;">Recent Payments</a></li>
@@ -82,12 +83,12 @@
       									{% for trans in student_trans %}
       									<tr>
       									<th style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{forloop.counter}} &nbsp</h></th>
-        									<th><h><span class="muted"> </span>{{trans.date_added}} &nbsp</h></th>
-        									<th><h><span class="muted"></span>{{trans.feesType}} &nbsp</h></th>
-        									<th><h><span class="muted"> </span>{{trans.amount}}&nbsp</h></th>
-        									<th><h><span class="muted"> </span> {{trans.branch}} &nbsp</h></th>
+        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{trans.date_added}} &nbsp</h></th>
+        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"></span>{{trans.feesType}} &nbsp</h></th>
+        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{trans.amount}}&nbsp</h></th>
+        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span> {{trans.branch}} &nbsp</h></th>
         									
-        									<th><h><span class="muted"> </span>{{trans.tellerID}}&nbsp</h></th>
+        									<th style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{trans.tellerID}}&nbsp</h></th>
         									<th><h><span class="muted"> </span> <a href ="/beige/print/{{trans.pk}}/True/">print</a>&nbsp</h></th>
       									</tr>
       									

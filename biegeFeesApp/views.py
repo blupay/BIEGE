@@ -136,57 +136,49 @@ def school_reg(request):
     #form = RegisterForm(request.POST)
     #if request.user.username == '':
 	#	return HttpResponseRedirect('/beige/login')
-    form1 = RegisterForm1(request.POST)
-    #print request.user.is_superuser
-    #print 3
-    prog   = Programme.objects.all()
+    #form1 = RegisterForm1(request.POST)
+   
+    pop =''
+    sch =''
+   
+    try:
+    	if request.session['pop']=='on':
+                pop = 'on'
+                sch = request.session['school']
+                request.session['school'] =''
+                request.session['pop'] =''
+    except KeyError:
+           	request.session['pop'] =''
     if request.method == 'POST':
-       
-       print request.user.is_superuser
-       if form1.is_valid():
-            #form1.save()
-            #new_user = form.save();
-            #new_user = authenticate(username=request.POST['username'], password=request.POST['password1'])
-            #login(request, new_user)
-            #salt = sha.new(str(random.random())).hexdigest()[:5]
-            #activation_key = sha.new(salt+new_user.username).hexdigest()
-            #key_expires = datetime.datetime.today() + datetime.timedelta(2)
-            worker = BeigeSchool()
-            #sch_prog  = Programme(form1.cleaned_data['programme'])
-            #worker.schoolName = form1.cleaned_data["schoolName"]
-            #worker.schoolID    = 
-           
-            #get_program = Programme.objects.filter(name =request.POST['prog1'])
-            worker.schoolName  = request.POST['schName']
-            worker.postalAddress = request.POST['postAddress']
-	    worker.phoneNumber =  request.POST['mobile']
-            worker.location = request.POST['loc']
-            worker.schoolType = request.POST['type']
-            #print form1.cleaned_data['programmes']
-           # get_programmes  =  Programme.objects.filter(name = form1.cleaned_data['programmes'] )
-	    #worker.programmes = get_programmes
-           
-            worker.save()
-	    #form1.username = "gggg"
-	    #form1.username = form.cleaned_data["username"]
-	    #form1.lastname = form.cleaned_data["last_name"]
-	    #form1.firstname = form.cleaned_data["first_name"]
-	    #form1.email = form.cleaned_data["email"]
-            #form1.save()
-            #request.session["galore"] = "modal"
-	    #galore = "on"
-	    #request.session["us_n"] = worker.username
-            #request.session["p_k"] = new_user.pk
-	    #p_k="on"
-	    #us_n = "on"
-	    return HttpResponseRedirect('/beige/add_school_user')
-    else:
-            #if us_n !="" and request.user.is_superuser:
-		#superuser = "Yes"
-		pass
+                print 3
+		try:
+		        print 2
+		    	worker = BeigeSchool()
+		    	worker.schoolName  = request.POST['schName']
+		    	request.session['school'] = request.POST['schName']
+		    	print 4
+		    	worker.schoolName_short =request.POST['shortName']
+		    	worker.postalAddress = request.POST['postAddress']
+		    	print 5
+		    	worker.phoneNumber =  request.POST['mobile']
+		    	print 6
+		    	worker.tel_no   =  request.POST['Tel']
+		    	print 7
+		    	worker.email_add = request.POST['e-mail']
+		    	print 8
+		    	worker.location = request.POST['loc']
+		    	print 9
+		    	worker.schoolType = request.POST['type']
+		    	print 10
+		   	worker.save()
+		   	request.session['pop']='on'
+		   	
+		   	return HttpResponseRedirect('/beige/school_reg')
+		except KeyError:
+		       return HttpResponseRedirect('/beige/schiol_reg')
 		
 
-    return render_to_response("beige/schoolreg.html", {'request':request.path,'prog':prog,'form1' : form1,
+    return render_to_response("beige/schoolreg.html", {'sch':sch,'pop':pop,'request':request.path,
 						      'user':request.user})
 
 
@@ -229,7 +221,8 @@ def adduser_sch(request):
 	#	return HttpResponseRedirect('/beige/login')
 	form = RegisterForm2(request.POST)
         form1 = SchUserForm(request.POST)
-        schools = BeigeSchool.objects.all()
+        schools = BeigeSchool.objects.all()    
+        
 	if request.method == 'POST':
        
 	       if form.is_valid() and form1.is_valid(): 
@@ -259,6 +252,7 @@ def adduser_sch(request):
 		    schuser.last_name=request.POST['last_name']
 		    schuser.email=request.POST['email']
 		    #schuser.mobile_number=form1.cleaned_data["mobile_number"]
+		    
 		    schuser.save()
 		    print 4
 		    return HttpResponseRedirect('/beige/beige/dashboard/')
@@ -362,8 +356,8 @@ def beige_dashboard(request):
         			except EmptyPage:
         			# If page is out of range (e.g. 9999), deliver last page of results.
             				schools = paginator.page(paginator.num_pages)
-				#schools = BeigeSchool.objects.all()
-                                return render_to_response('beige/dashboard.html', {'schools':schools,'request':request.path,'user': request.user})
+				transaction = BeigeTransaction.objects.all()  
+                                return render_to_response('beige/dashboard.html', {'transaction':transaction,'schools':schools,'request':request.path,'user': request.user})
 
                 except BeigeUser.DoesNotExist:
                                  return HttpResponseRedirect('/beige/login')
@@ -383,8 +377,8 @@ def beige_dashboard(request):
         	# If page is out of range (e.g. 9999), deliver last page of results.
             		schools = paginator.page(paginator.num_pages)
 				#schools = BeigeSchool.objects.all()
-                  
-                return render_to_response('beige/dashboard.html', {'schools':schools,'request':request.path,'user': request.user})
+                transaction = BeigeTransaction.objects.all()  
+                return render_to_response('beige/dashboard.html', {'transaction':transaction,'schools':schools,'request':request.path,'user': request.user})
          
 	
 '''PAYMENT'''
@@ -559,7 +553,8 @@ def beige_login(request):
     })
 
 
-'''STUDENT SEARCH'''     
+'''STUDENT SEARCH''' 
+@csrf_exempt    
 def student_search(request,term):
 	if request.user.username == '':
 		return HttpResponseRedirect('/beige/login')
@@ -750,6 +745,7 @@ def payment(request):
 
 
 '''SCHOOL DETAILS'''
+@csrf_exempt
 def school_detail(request, id, showDetails=False):
       if request.user.username == '':
 		return HttpResponseRedirect('/beige/login')
@@ -786,6 +782,7 @@ def school_detail(request, id, showDetails=False):
       				'user':request.user})
 
 '''STUDENT SEARCH AT BIEGE'''
+@csrf_exempt
 def student_search_beige(request,term):
 	if request.user.username == '':
 		return HttpResponseRedirect('/beige/login')
@@ -825,6 +822,7 @@ def student_search_beige(request,term):
         
 	
 '''PAYMENT DETIALS'''
+@csrf_exempt
 def payment_detail(request,id, showDetails=False):
 	popup = ''
 	this_transaction =''
@@ -853,7 +851,7 @@ def payment_detail(request,id, showDetails=False):
       
 	return render_to_response("beige/search_result.html",{'popup':popup,'student_':student_,'student_trans':student_trans,'this_transaction':this_transaction,'request':request.path,'user':request.user})
 	
-                		
+@csrf_exempt                		
 def print_trans(request,id, showDetails=False):
      request.session['mod'] = 'on'
      student_trans = BeigeTransaction.objects.get(pk = id)
