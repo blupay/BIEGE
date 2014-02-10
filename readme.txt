@@ -25,6 +25,12 @@ Timeline: 29-01-2013
 3. edit/update student's details
 
 
-Timeline: 03/02/2013
-1. 
+Timeline: 05/02/2013
+1. change username on the  dashboard to first name
+
+Timeline: 11/02/2013
+1. Schools fees setup
+2. View fees by academic year
+3. 
+
 

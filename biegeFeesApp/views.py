@@ -44,15 +44,16 @@ def dashboard(request):
         try:
 	   currentUser = SchoolUsers.objects.get(username=request.user.username)
            school = currentUser.School.schoolName
+           students = Students.objects.filter(schoolID=currentUser.School)
         except  SchoolUsers.DoesNotExist:
               return HttpResponseRedirect('/beige')
               
-	return render_to_response('school/dashboard.html', {'school':school,'request':request.path,'user': request.user})
+	return render_to_response('school/dashboard.html', {'school':school,'students':students,'request':request.path,'user': request.user})
 
 
 
 '''STUDENT SEARCH'''
-def stud_search(request,term):
+def stud_search_id(request,term):
         currentUser = SchoolUsers.objects.get(username=request.user.username)
         school = currentUser.School.schoolName
         student_ = ""
@@ -60,9 +61,10 @@ def stud_search(request,term):
         
 	if request.GET.get('q','') != '':
 			term = request.GET.get('q','')
+			print term
                         try:
 	       		      student_ = Students.objects.get(studentID=term)   
-                              student_trans = BeigeTransaction.objects.filter(studentID__studentID = term)
+                              student_trans = BeigeTransaction.objects.filter(studentID__studentID = term).order_by("-date_added")
                         except Students.DoesNotExist:
                                 return HttpResponseRedirect('/beige/school/records/')
                         
@@ -70,6 +72,28 @@ def stud_search(request,term):
         else:
                         errors ="No Match"
                         return render_to_response('school/records.html',{'school':school,'errors':errors,'request':request.path,'user':request.user})
+
+
+def stud_search_surname(request,term):
+        currentUser = SchoolUsers.objects.get(username=request.user.username)
+        school = currentUser.School.schoolName
+        student_ = ""
+        student_trans =""
+        
+	if request.GET.get('q','') != '':
+			term = request.GET.get('q','')
+			print term
+                        try:
+	       		      student_ = Students.objects.filter(surname__icontains=term)   
+                              #student_trans = BeigeTransaction.objects.filter(studentID__studentID = term)
+                        except Students.DoesNotExist:
+                              pass
+                        
+	                return render_to_response('school/search_result_surname.html',{'school':school,'student_':student_,'request':request.path,'user':request.user})
+       
+
+
+
 
 
 '''STUDENT RECORDS'''
@@ -80,28 +104,11 @@ def student_records(request):
         school = currentUser.School.schoolName
 	return render_to_response('school/records.html', {'school':school,'request':request.path,'user': request.user})
 
-#class RegisterForm(UserCreationForm):
-#	class Meta:
-#        	model = User
-#        	exclude=['activation_key','key_expires']
-#        	fields = ('username', 'first_name','last_name', 'email',)
-
-
 class RegisterForm1(ModelForm):
 	class Meta:
 		model = BeigeSchool
 		exclude = ['datecreated','programmes','schoolName','postalAddress','phoneNumber','schoolType','location','dateupdated','schoolID']
         	fields  = ()
-
-
-#class RegisterForm2(ModelForm):
-#	class Meta:
-#		model = Beige
-#		exclude = ['datecreated','dateupdated','schoolID']
-#       	fields  = ('schoolName','schoolName','postalAddress','phoneNumber','location','schoolType','programmes',)
-
-
-
 
 def save(self, commit=True):
         form = RegisterForm1()
@@ -115,29 +122,7 @@ def save(self, commit=True):
 
 '''SCHOOL REGISTERATION'''
 @csrf_exempt
-def school_reg(request):
-	
-    #galore=""
-    #us_n = ""
-    #p_k = ""
-    #superuser=""
-    #try:
-    	#if request.session["galore"] == "modal":
-		#us_n = request.session["us_n"]
-		#p_k = request.session["p_k"] 
-		#galore = "modal"
-		#request.session["galore"] = ""
-		#request.session["us_n"] = ""
-                #request.session["p_k"] = ""
-
-	#except KeyError:
-	#request.session["galore"] = ""
-
-    #form = RegisterForm(request.POST)
-    #if request.user.username == '':
-	#	return HttpResponseRedirect('/beige/login')
-    #form1 = RegisterForm1(request.POST)
-   
+def school_reg(request):   
     pop =''
     sch =''
    
@@ -396,51 +381,63 @@ class student_reg(ModelForm):
 		exclude=['studentID','surname','gender','programme','Nationality','contact_Of_Guardian','mobile_number','email','residential_address','schoolID','date_added','date_updated','dateOfBirth','age',]
 		fields = ()
 
-
+def fees_setup(request):
+        currentUser = SchoolUsers.objects.get(username=request.user.username)
+        school = currentUser.School.schoolName
+        return render_to_response("school/fees_setup.html",{'school':school,'request':request.path,'user':request.user})
+from django.core.mail import send_mail
 
 '''REGISTER STUDENT'''
 @csrf_exempt
 def register(request):
         #if request.user.username == '':
 	#	return HttpResponseRedirect('/beige')
+	pop = ''
+	student =''
         currentUser = SchoolUsers.objects.get(username=request.user.username)
         school = currentUser.School.schoolName
         courses =  Programme.objects.filter(program = currentUser.School)
-        #course = None
-        student_form  = student_reg(request.POST)
-	#student = Students()
-	#errors = []
+        try:
+		if  request.session['mod'] != '':
+		     pop = 'on'
+		     request.session['mod'] =''
+		     student = request.session['student']
+        except KeyError:
+               request.session['mod'] =''
 	if request.method =='POST':
-		if student_form.is_valid():
-                     
-                     #student_form.save() 
-                     reg_student = Students()
-                     
-                    # course  = Programme.objects.all()
-                     counT   = Country.objects.get(iso =request.POST['count'] )
-                     reg_student.schoolID = currentUser.School
-                     reg_student.surname  = request.POST['surname'] 
-                     reg_student.othername = request.POST['othername']
-                    # reg_student.contact_Of_Guardian = request.POST['guardian']
-                     reg_student.email     = request.POST['email']
-                     reg_student.gender    = request.POST['sex']
-                     #reg_student.dateOfBirth  = student_form.cleaned_data["dateOfBirth"]
-                     reg_student.dateOfBirth = request.POST['dob']
-                     reg_student.mobile_number = request.POST['mobile']
-                     #counT = request.POST['count']
-                     print counT.iso
-                     reg_student.Nationality = counT
-                     #reg_student.programme  = request.POST['prog']
-                     reg_student.residential_address  = request.POST['address']
-                     print currentUser.School
-		     print reg_student.schoolID
-                     reg_student.save()
-                    
-                     
-                     return HttpResponseRedirect('/beige/school/dashboard/')
+		
+        	reg_student = Students()
+          	counT   = Country.objects.get(iso =request.POST['count'] )
+                reg_student.schoolID = currentUser.School
+                reg_student.surname  = request.POST['surname'] 
+                request.session['student'] = str (request.POST['surname']) +' '+ str(request.POST['othername'])
+                reg_student.othername = request.POST['othername']
+                reg_student.email     = request.POST['email']
+                reg_student.gender    = request.POST['sex']
+                if request.POST['dob'] != '':
+                	reg_student.dateOfBirth = request.POST['dob']
                 else:
-                    pass
-        return render_to_response('school/register.html', {'student_form':student_form,'request':request.path,'courses':courses,'school':school,'user': request.user})
+                    	reg_student.dateOfBirth = None
+                reg_student.mobile_number = request.POST['mobile']
+                print counT.iso
+                reg_student.Nationality = counT
+                if request.POST['address'] != '': 
+                	reg_student.residential_address  = request.POST['address']
+                else: 
+                        reg_student.residential_address = None
+                
+                reg_student.Guardian_name = request.POST['guardian']
+                reg_student.mobile_guardian = request.POST['mobile_g']
+                reg_student.email_of_guardian = request.POST['email_g'] 
+               
+                      
+                reg_student.save()
+                request.session['mod'] = 'on'
+                
+                return HttpResponseRedirect('/beige/school/register/')
+                
+                
+        return render_to_response('school/register.html', {'pop':pop,'student':student,'request':request.path,'courses':courses,'school':school,'user': request.user})
 
 
 	
@@ -710,7 +707,7 @@ def student_detail(request, id, showDetails=False):
 			        #newpay.transactionID = forms.cleaned_data['transactionID']
 			        #request.session["newpay"] = newpay
                        		request.session["modal"] = 'on' 
-				#newpay.save()
+				request.session['color'] = 'on'
 				print "galore"
 				return HttpResponseRedirect('/beige/st_details/'+str(student_.pk)+'/True/')
 			else:
@@ -727,8 +724,14 @@ def student_detail(request, id, showDetails=False):
 		        newpay.feesType=getFee
 		        newpay.studentID= get_Student
 		        newpay.payment_by = request.session['paidby']
+		       
 			newpay.save()
-		        print "galore galore galore"
+		        html_contenT = "Hello\n Your child"+" "+str(get_Student.surname)+" at"+" "+str(get_Student.schoolID.schoolName)+" "+"Has made payment of Fees at Beige Capital" 
+                	try:
+                       		send_mail('Contact',html_contenT,'get_Student.email_of_guardian',[str(get_Student.email_of_guardian)],fail_silently=False)
+                	except KeyError:
+                       		pass
+		        
 			return HttpResponseRedirect('/beige/std_details/'+str(student_.pk)+'/True/')
         return render_to_response('beige/make_payment.html',{'popup':popup,'amount_error':amount_error,'request':request.path,'fees_all':fees_all,'is_allowed':is_allowed,'getFee':getFee,'getAmt':getAmt,'fees':fees,'form':form,'student_':student_,'user':request.user})
 
@@ -825,16 +828,20 @@ def student_search_beige(request,term):
 @csrf_exempt
 def payment_detail(request,id, showDetails=False):
 	popup = ''
+	color=''
 	this_transaction =''
         if request.user.username == '':
 		return HttpResponseRedirect('/beige/login')
 	try:
 		if request.session['mod'] =='on':
 		    popup = 'modal'
-		    request.session['mod'] = '' 
+		    request.session['mod'] = ''
+		    
 		    this_transaction = request.session['std']
 		    request.session['std'] = ''
-		    
+		if request.session['color'] =='on':
+		   color = request.session['color']
+		   request.session['color'] =''
 	except KeyError:
       		request.session["mod"] = ''
         student_ = Students.objects.get(pk = id)
@@ -849,7 +856,7 @@ def payment_detail(request,id, showDetails=False):
         	# If page is out of range (e.g. 9999), deliver last page of results.
         	student_trans = paginator.page(paginator.num_pages)
       
-	return render_to_response("beige/search_result.html",{'popup':popup,'student_':student_,'student_trans':student_trans,'this_transaction':this_transaction,'request':request.path,'user':request.user})
+	return render_to_response("beige/search_result.html",{'popup':popup,'student_':student_,'student_trans':student_trans,'color':color,'this_transaction':this_transaction,'request':request.path,'user':request.user})
 	
 @csrf_exempt                		
 def print_trans(request,id, showDetails=False):
@@ -945,7 +952,7 @@ def school_password_change(request,
 
 
 
-#LOGOUT
+#LOGOUT-BEIGE
 @csrf_exempt
 def do_logout(request):
 	if request.user.username == '' or request.user.is_active == False:
@@ -971,28 +978,28 @@ def do_logout(request):
 		return HttpResponseRedirect('/beige/login')
 
 
-#excel upload
-
-
-class ImportExcelForm(forms.Form):
-    file  = forms.FileField(label= "Choose excel to upload") 
+#LOGOUT-SCHOOL
+@csrf_exempt
+def do_logouT(request):
+	if request.user.username == '' or request.user.is_active == False:
+		request.user.username = ''
+		request.session["sess_uname"] = ''
+		return HttpResponseRedirect('/beige')
+	try:
+    		if request.user.username != '':
+			logout(request)
+			request.session["sess_uname"] = ''
+			request.user.username == ''
+			return HttpResponseRedirect('/beige')
     
-def test_flowcell(request):
-    c = RequestContext(request, {'other_context':'details here'})
-    if request.method == 'POST': # If the form has been submitted...
-        form = ImportExcelForm(request.POST,  request.FILES) # A form bound to the POST data
-        if form.is_valid(): # All validation rules pass
-            excel_parser= ExcelParser()
-            success, log  = excel_parser.read_excel(request.FILES['file'] )
-            if success:
-                return redirect(reverse('admin:index') + "pages/flowcell_good/") ## redirects to aliquot page ordered by the most recent
-            else:
-                errors = '* Problem with flowcell * <br><br>log details below:<br>' + "<br>".join(log)
-                c['errors'] = mark_safe(errors)
-        else:
-            c['errors'] = form.errors 
-    else:
-        form = ImportExcelForm() # An unbound form
-    c['form'] = form
-    return render_to_response('school/file_upload.html')  
+		else:
+			
+			return HttpResponseRedirect('/beige')
+		
+
+        except KeyError:
+		logout(request)
+		request.session["sess_uname"] = ''
+		request.user.username == ''
+		return HttpResponseRedirect('/beige')
 

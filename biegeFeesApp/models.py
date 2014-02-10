@@ -9,6 +9,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 # Create your models here.
 from import_export.admin import ImportExportMixin
+from django.forms import ModelForm
+from suit.widgets import SuitDateWidget, SuitTimeWidget, SuitSplitDateTimeWidget,HTML5Input
+from suit.admin import SortableModelAdmin
+import reversion
+from reversion.helpers import patch_admin
+
 
 class Programme(models.Model):
 	name = models.CharField(max_length=20,help_text ="Programme Name")
@@ -20,14 +26,14 @@ class Programme(models.Model):
 
 
 class BeigeSchool(models.Model):
-	schoolID = models.CharField(max_length=10,blank=False,null=False)
-	schoolName = models.CharField(max_length=50,blank=False,null=False)
+	schoolID = models.CharField('ID',max_length=10,blank=False,null=False)
+	schoolName = models.CharField('School Name',max_length=50,blank=False,null=False)
 	schoolName_short = models.CharField('Abbreviation(School_Name)',max_length=15, blank= True, null = True)
 	postalAddress = models.TextField(blank=False,null=False)
 	phoneNumber = models.CharField('mobile',max_length=15,blank=True,null=True)
 	tel_no     = models.CharField('tel',max_length=15,blank = True, null= True)
 	location = models.CharField(max_length=30,blank=True,null=True)
-	schoolType =  models.CharField(max_length=7, choices = (("Private", "Private"), 
+	schoolType =  models.CharField('School Type',max_length=7, choices = (("Private", "Private"), 
                                                     ("Public", "Public")
                                                    ))
         email_add = models.EmailField(blank = True, null= True)
@@ -118,11 +124,11 @@ class BeigeUser(models.Model):
              return '%s' %(user_log.last_login.strftime("%b %d, %Y, %I:%M %p"))
 
 class Students(models.Model):
-      studentID = models.CharField(max_length=10,blank=True,null=True)
-      schoolID = models.ForeignKey(BeigeSchool,blank=False,null=False)
+      studentID = models.CharField('ID',max_length=10,blank=True,null=True)
+      schoolID = models.ForeignKey(BeigeSchool, verbose_name ='School',blank=False,null=False)
       surname	 = models.CharField(max_length=20,blank=True,null=True)
       othername = models.CharField(max_length=20,blank=True,null=True)
-      email = models.EmailField(max_length=20,unique=True,blank=True,null=True)
+      email = models.EmailField(max_length=40, blank=True,null=True)
       mobile_number = models.CharField(max_length=10,blank=True,null=True)
       gender = models.CharField(max_length=6, choices = (('Male', 'Male'), 
                                                     ('Female', 'Female')
@@ -133,9 +139,12 @@ class Students(models.Model):
       programme = models.CharField(max_length=20,blank=True,null=True)							
       Nationality =  models.ForeignKey(Country,default = "GH")
       residential_address = models.TextField(max_length=100,null= True, blank = True)
-      contact_Of_Guardian = models.TextField("Contact-N.O.K",help_text ="Please enter contact details of Next of Kin",max_length = 100,blank =True,null = True)
+      Guardian_name = models.CharField("Name Of Guardian",default ='None',help_text ="Please enter contact details of Next of Kin",max_length = 100,blank =True,null = True)
+      mobile_guardian =  models.CharField(max_length=10,default ='None',blank=True,null=True)
+      email_of_guardian = models.EmailField(max_length=40,default ='None', blank=True,null=True)
       date_added = models.DateTimeField(auto_now_add=True)
       date_updated = models.DateTimeField(auto_now=True)
+      order        = models.PositiveIntegerField(default=0)
       
       def fullnameC(self):
               return "%s %s" %(self.surname,self.othername)
@@ -187,7 +196,7 @@ class Students(models.Model):
 
 
 class FeesCategory(models.Model):
-	name = models.CharField(max_length = 20)
+	name = models.CharField(help_text='Change with caution, changes affect what appears on receipt',max_length = 20)
 	date_added = models.DateTimeField(auto_now_add=True)
         date_updated = models.DateTimeField(auto_now=True)	
 	def __unicode__(self):
@@ -225,7 +234,8 @@ class SchoolUsers(models.Model):
 
 class Fees_category_school(models.Model):
        School = models.ForeignKey(BeigeSchool,related_name ='feesCat',blank=False,null=False)
-       Name = models.CharField(max_length= 40, blank=False, null = False)
+       Name = models.CharField(help_text='Change with caution, changes affect what appears on receipt',max_length= 40, blank=False, null = False)
+       academic_year = models.CharField(help_text='Enter Academic Year. e.g:2013-2014',max_length= 40, blank=False, null = False)
        expected_amount = models.FloatField(blank=False, null=False)
        from_date = models.DateField()
        to_date    = models.DateField()
@@ -237,6 +247,11 @@ class Fees_category_school(models.Model):
        
        def __unicode__(self):
 		return '%s-%s' %(self.School.schoolName,self.Name)
+       
+       def check(self):
+            if self.to_date is datetime.today:
+               self.to_date = False
+            return True
        
        class Meta:
                 verbose_name = "Fees Category By School"
@@ -283,13 +298,31 @@ class BeigeTransaction(models.Model):
                 return True
 
 
-
+class ChangeStudentForm(ModelForm):
+    class Meta:
+        #model = Students
+        widgets = {
+            'dateOfBirth': HTML5Input(input_type='date'),
+            
+        }
+        
+class ChangeFeesForm(ModelForm):
+    class Meta:
+        #model = Students
+        widgets = {
+            'from_date': HTML5Input(input_type='date'),
+            'to_date': HTML5Input(input_type='date'),
+            
+        }
 class StudentInline(admin.TabularInline):
 	model = Students
 	extra = 1
-
 	
+
+
+
 class BeigeUserAdmin(admin.ModelAdmin):
+        actions = None
 	list_display = ('username','first_name','last_name','email','mobile_number','branch','last_login','added_by','date_added','last_updated_by','date_updated',)
 	ordering = ['-date_added']
         list_filter = ('branch__branch_name',)
@@ -309,7 +342,7 @@ class BeigeUserAdmin(admin.ModelAdmin):
 
 
 
-class BeigeBranchAdmin(admin.ModelAdmin):
+class BeigeBranchAdmin(reversion.VersionAdmin,admin.ModelAdmin):
        list_display = ('edit','branch_name','tel','Number_of_users','added_by','date_added','last_updated_by','date_updated',)
        ordering = ['-date_added']
        list_filter = ('date_added','added_by',)
@@ -324,6 +357,7 @@ class BeigeBranchAdmin(admin.ModelAdmin):
        
              
 class SchoolUserAdmin(admin.ModelAdmin):
+        actions = None
 	list_display = ('username','first_name','last_name','email','School','date_added','date_updated',)
 	ordering = ['-date_added']
         list_filter = ('School__schoolName',)
@@ -333,8 +367,10 @@ class SchoolUserAdmin(admin.ModelAdmin):
 		super(SchoolUserAdmin,self).__init__(*args, **kwargs)
 		self.list_display_links = (None,)
 
-class SchoolFeesCategoryAdmin(admin.ModelAdmin):
-	list_display = ('School','Name','from_date','to_date','created_by','date_created','last_updated_by','date_updated',)
+class SchoolFeesCategoryAdmin(reversion.VersionAdmin,admin.ModelAdmin):
+        actions = None
+        form = ChangeFeesForm
+	list_display = ('School','Name','academic_year','from_date','to_date','created_by','date_created','last_updated_by','date_updated',)
 	ordering = ['-date_created']
         list_filter = ('School__schoolName',)
         #search_fields = ('username','first_name')
@@ -347,7 +383,7 @@ class SchoolFeesCategoryAdmin(admin.ModelAdmin):
                         obj.created_by = request.user.username
              obj.save()
 
-class ProgrammeAdmin(admin.ModelAdmin):
+class ProgrammeAdmin(reversion.VersionAdmin,admin.ModelAdmin):
        
         list_display =('name','date_added','date_updated',)
 	list_filter = ('name',)
@@ -360,7 +396,7 @@ class ProgrammeAdmin(admin.ModelAdmin):
 
 
 
-class BeigeSchoolAdmin(admin.ModelAdmin):
+class BeigeSchoolAdmin(reversion.VersionAdmin,admin.ModelAdmin):
        
         list_display =('schoolID','schoolName','postalAddress','phoneNumber','location','schoolType','Number_of_Student','Number_of_users','date_added','date_updated',)
 	list_filter = ('schoolName','schoolType')
@@ -379,15 +415,17 @@ class BeigeSchoolAdmin(admin.ModelAdmin):
 
 
 class StudentsAdmin(ImportExportMixin,admin.ModelAdmin):
-       
+        form = ChangeStudentForm
+        actions =None
+        #sortable = 'order'
         list_display =('studentID','schoolID','surname','othername','gender','Age','email','mobile_number','programme','Nationality','residential_address','date_added','date_updated')
-	list_filter = ('gender','programme')
+	list_filter = ('gender','programme','schoolID__schoolName')
 	search_fields = ('studentID','^schoolID__schoolID','surname','othername','gender','email','mobile_number')
 	
 	#inlines = [TransactionInline]
 	ordering = ('-date_added',)
 
-        fieldsets = ( (None, {'fields':('studentID','schoolID','surname','othername','gender','dateOfBirth','email','mobile_number','age','programme','Nationality','residential_address','contact_Of_Guardian')}),)
+        fieldsets = ( (None, {'fields':('studentID','schoolID','surname','othername','gender','dateOfBirth','email','mobile_number','age','programme','Nationality','residential_address','Guardian_name','mobile_guardian','email_of_guardian')}),)
 
         readonly_fields       = ('studentID','age',)
         date_hierarchy    = 'date_added'
@@ -395,8 +433,8 @@ class StudentsAdmin(ImportExportMixin,admin.ModelAdmin):
 
 
 
-class FeesCategoryAdmin(admin.ModelAdmin):
-       
+class FeesCategoryAdmin(reversion.VersionAdmin,admin.ModelAdmin):
+        actions = None
         list_display =('name','date_added','date_updated',)
 	list_filter = ('name',)
 	search_fields = ('name',)
@@ -409,10 +447,10 @@ class FeesCategoryAdmin(admin.ModelAdmin):
 
 
 class BeigeTransactionAdmin(admin.ModelAdmin):
-       
+        actions = None
         list_display =('transactionID','studentID','school','branch','tellerID','payment_by','feesType','amount','date_added','date_updated')
-	list_filter = ('studentID__schoolID',)
-	search_fields = ('transactionID','^studentID__studentID','tellerID','form','feesType','otherFeesType')
+	list_filter = ('studentID__schoolID','date_added','tellerID__branch__branch_name',)
+	search_fields = ('transactionID','^studentID__studentID','^tellerID__first_name',)
 	
 	#inlines = [TransactionInline]
 	ordering = ('-date_added',)

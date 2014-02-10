@@ -1,6 +1,7 @@
 # Django settings for biegeFees project.
 import dj_database_url
 
+from django.utils.translation import ugettext_lazy as _
 
 import os
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
@@ -12,10 +13,24 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = 'blupaygh@gmail.com'
+EMAIL_HOST_PASSWORD = 'blubamboo'
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+ALLOWED_HOSTS = []
+
+
 DATABASES = {
 'default' :
 dj_database_url.config(default="sqlite:/beige_dev.db")
 }
+
+
+
 
 GRAPPELLI_ADMIN_TITLE = 'BIEGE SCHOOL FEES ADMINISTRATION'
 
@@ -105,11 +120,17 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.Loader',
 )
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 
-TEMPLATE_CONTEXT_PROCESSORS = (
+
+
+
+TEMPLATE_CONTEXT_PROCESSORS = TCP+ (
     'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth'  # admin app wants this too
 )
+
+
 
 
 MIDDLEWARE_CLASSES = (
@@ -118,6 +139,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'reversion.middleware.RevisionMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -134,6 +156,24 @@ TEMPLATE_DIRS = (
 	os.path.join(SITE_ROOT,'templates'),
 )
 
+SUIT_CONFIG = {
+    'MENU': (
+	'sites',
+          {'app': 'biegefeesapp','label': 'Models', 'icon':'icon-cog'},
+          {'app': 'auth', 'icon':'icon-lock'},
+          
+    ),
+    
+    'MENU_EXCLUDE': ('django_evolution' ),
+    'CONFIRM_UNSAVED_CHANGES': True,
+    'SHOW_REQUIRED_ASTERISK': True,
+    'SEARCH_URL': '',
+    'ADMIN_NAME': 'BEIGE ADMINISTRATION'
+    
+    
+}
+
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -142,9 +182,12 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
+    'suit',
+    #'django_admin_bootstrapped.bootstrap3',
+    #'django_admin_bootstrapped',
     'grappelli',
     'biegeFeesApp',
-    
+    'reversion',
     # Uncomment the next line to enable the admin:
      'django.contrib.admin',
      'countries',
@@ -154,6 +197,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 

@@ -20,7 +20,7 @@
         Fee Type : {{this_transaction.feesType}}<br>            
         Amount :  <font style="color:red;">GHS {{this_transaction.amount}}</font> <br>
         Payment by: {{this_transaction.payment_by}}
-        <p>Attended to by: </p>
+        <p>Teller: </p>
          Name: {{this_transaction.tellerID.fullName}} <br>
          Branch : {{this_transaction.branch}}
         
@@ -82,13 +82,13 @@
 								<tbody>
       									{% for trans in student_trans %}
       									<tr>
-      									<th style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{forloop.counter}} &nbsp</h></th>
-        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{trans.date_added}} &nbsp</h></th>
-        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"></span>{{trans.feesType}} &nbsp</h></th>
-        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{trans.amount}}&nbsp</h></th>
-        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span> {{trans.branch}} &nbsp</h></th>
+      									<th {% ifnotequal color '' %}style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}" {% endifnotequal %}><h><span class="muted"> </span>{{forloop.counter}} &nbsp</h></th>
+        									<th {% ifnotequal color '' %} style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}" {% endifnotequal %}><h><span class="muted"> </span>{{trans.date_added}} &nbsp</h></th>
+        									<th  {% ifnotequal color '' %}style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}" {% endifnotequal %}><h><span class="muted"></span>{{trans.feesType}} &nbsp</h></th>
+        									<th {% ifnotequal color '' %} style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}" {% endifnotequal %}><h><span class="muted"> </span>{{trans.amount}}&nbsp</h></th>
+        									<th {% ifnotequal color '' %} style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}" {% endifnotequal %}><h><span class="muted"> </span> {{trans.branch}} &nbsp</h></th>
         									
-        									<th style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{trans.tellerID}}&nbsp</h></th>
+        									<th {% ifnotequal color '' %}style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"  {% endifnotequal %}><h><span class="muted"> </span>{{trans.tellerID}}&nbsp</h></th>
         									<th><h><span class="muted"> </span> <a href ="/beige/print/{{trans.pk}}/True/">print</a>&nbsp</h></th>
       									</tr>
       									

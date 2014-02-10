@@ -16,7 +16,7 @@
   <h4> <font color= "grey">Account Name : </font> {{student_.fullnameC}}</h4>
   <h4> <font color= "grey">System ID : </font> {{student_.studentID}}</h4>
    <h4> <font color= "grey">School : </font> {{student_.schoolID.schoolName}}</h4>
-  
+  <a href="/beige/std_details/{{student_.pk}}/True/" style="color:brown;" > <span class="glyphicon glyphicon-arrow-left"></span> back</a>
  <form class="form-horizontal" role="form" action="." method="post">
    
    <div class="form-group">
@@ -65,11 +65,11 @@
 
 </div>
 </div>
-{{popup}}
+
 
 {% ifnotequal popup '' %}
 
-{{popup}}
+
 <div class="modal fade" id="myModal">
   <div class="modal-dialog">
     <div class="modal-content">

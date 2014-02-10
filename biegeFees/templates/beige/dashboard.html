@@ -227,7 +227,7 @@ span.reference{
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-           <a class="navbar-brand" href="#">BEIGE Capital</a>
+           <img src="/static/images/download.jpg" height="50" width="150" alt=""><!--<a class="navbar-brand" href="#">BEIGE Capital</a> -->
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -239,7 +239,7 @@ span.reference{
             <li style="margin-top:15px; margin-right:40px;"> Security Level:{% ifequal user.is_superuser 1 %}<b style="color:white;">Admin</b>{% else %}<b style="color:white;">Teller</b>{% endifequal %}</li>
             
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"> </span> <font color="white">Welcome</font>&nbsp {{user.username}}<b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"> </span> <font color="white">Welcome</font>&nbsp {% ifnotequal user.first_name '' %}{{user.first_name}} {{user.last_name}}{% else %}{{user.username}} {% endifnotequal %}<b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="/beige/logout/">Log out</a></li>
                 <li class="divider"></li>
@@ -304,6 +304,7 @@ span.reference{
   
   
 </div>
+</ul>
 </div>
 </div>
 </div>

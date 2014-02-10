@@ -10,7 +10,9 @@ urlpatterns = patterns('',
 		  url(r'^school/dashboard/$', 'biegeFeesApp.views.dashboard'),
 		  url(r'^school/register/$', 'biegeFeesApp.views.register'),
                   url(r'^school/records/$', 'biegeFeesApp.views.student_records'),
-                  url(r'^school/sch-search/(?P<term>.*?)$','biegeFeesApp.views.stud_search'),
+                  url(r'^school/sch-search/(?P<term>.*?)$','biegeFeesApp.views.stud_search_id'),
+                  url(r'^school/search_surname/(?P<term>.*?)$','biegeFeesApp.views.stud_search_surname'),
+                  url(r'^school/fees/$', 'biegeFeesApp.views.fees_setup'),
 
                   #beige details
 		  url(r'^login/$', 'biegeFeesApp.views.beige_login'),
@@ -36,7 +38,7 @@ urlpatterns = patterns('',
 			#School Change Password
 		  url(r'^school/changepass/$','biegeFeesApp.views.school_password_change'),
 		  url(r'^logout/$', 'biegeFeesApp.views.do_logout'),
-
+                  url(r'^school/logout/$', 'biegeFeesApp.views.do_logouT'),
 
 
 		  #url(r'^beige/changedpass/$','biegeFeesApp.views.changedpass'),

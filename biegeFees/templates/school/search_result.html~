@@ -30,9 +30,10 @@
 								<tbody>
       									{% for trans in student_trans %}
       									<tr>
-        									<th><h><span class="muted">--- </span>{{trans.date_added}} &nbsp</h></th>
+        									<th><h><span class="muted"></span>{{trans.date_added}} &nbsp</h></th>
         									<th><h><span class="muted"></span>{{trans.feesType}} &nbsp</h></th>
         									<th><h><span class="muted"> </span>{{trans.amount}}&nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{trans.tellerID.branch.branch_name}}&nbsp</h></th>
         									<th><h><span class="muted"> </span>{{trans.tellerID}}&nbsp</h></th>
       									</tr>
       									
@@ -50,11 +51,10 @@
 </div>
 </div>
 
-{% endblock %}
 
 
 
-/div>
+
 </div>
 
 {% endblock %}

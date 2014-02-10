@@ -7,7 +7,7 @@
 {% endblock title %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <meta name="author" content="Admin" >
+    <meta name="author" content="GOD'S LOVE" >
 
     <!-- Le styles -->
     <link href="/static/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
@@ -127,19 +127,19 @@ span.reference{
             padding:20px;
         }
     </style>
-    <link href="../assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <!--<link href="../assets/css/bootstrap-responsive.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="../assets/js/html5shiv.js"></script>
     <![endif]-->
 
-    <!-- Fav and touch icons -->
+    <!-- Fav and touch icons 
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
       <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
                     <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
-                                   <link rel="shortcut icon" href="../assets/ico/favicon.png">
+                                   <link rel="shortcut icon" href="../assets/ico/favicon.png"> -->
   </head>
 
   <body class="container">
@@ -148,29 +148,28 @@ span.reference{
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
+            <span class="sr-only"></span>
             <span></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
 	      
           </button>       
-           <a class="navbar-brand" href="#">BEIGE Capital</a>   
+          <img src="/static/images/download.jpg" height="50" width="150" alt="">   
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/school/dashboard/">{{school}} &nbsp <span class="glyphicon glyphicon-home"> </span></a></li>
+            <li class="" ><a href="/beige/school/dashboard/"><b style="color:white;">{{school}}</b> &nbsp <span class="glyphicon glyphicon-home"> </span></a></li>
             <li><a href="#about"></a></li>
             <li><a href="#contact"></a></li>
             
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="../navbar/">Default</a></li>
-            <li><a href="../navbar-static-top/">Static top</a></li>
+
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"> </span> &nbsp {{user.username}}<b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"> </span> &nbsp{{user.first_name}}<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/">Log out</a></li>
+                <li><a href="/beige/school/logout">Log out</a></li>
                 <li class="divider"></li>
                 <li><a href="/beige/school/changepass">Change Password</a></li>
               </ul>
@@ -187,7 +186,7 @@ span.reference{
     <div class="list-group">
      
  	 <a href="/beige/school/dashboard/" class="list-group-item {% ifequal request '/beige/school/dashboard/' %} active{% endifequal %}">	
-    <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-home"></span>&nbsp &nbsp Dash Board</h4>
+    <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-home"></span>&nbsp &nbsp Dashboard</h4>
     <p class="list-group-item-text">...</p>
   </a>
   <a href="/beige/school/register/" class="list-group-item {% ifequal request '/beige/school/register/' %} active{% endifequal %}">	
@@ -198,9 +197,9 @@ span.reference{
     <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-arrow-right"></span>&nbsp &nbsp History</h4>
     <p class="list-group-item-text">View Student Payment Records</p>
   </a>
-  <a href="#" class="list-group-item ">	
-    <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-arrow-right"></span>&nbsp &nbsp Another Item</h4>
-    <p class="list-group-item-text">some text</p>
+  <a href="/beige/school/fees/" class="list-group-item {% ifequal request '/beige/school/fees/' %} active{% endifequal %} ">	
+    <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-arrow-right"></span>&nbsp &nbsp Fees</h4>
+    <p class="list-group-item-text">Setup new fees</p>
   </a>
 </div>
 </div>
@@ -212,23 +211,68 @@ span.reference{
   <!-- Default panel contents -->
   <div class="panel-heading">Dash Board</div>
   <div class="panel-body">
-    <p> </p>
+  <form class="form-horizontal" action="/beige/school/search_surname/" method="GET">
+<div class="row">
+  <div class="col-lg-6 col-lg-offset-0">
+    <div class="input-group">  
+      <input type="text" name="q" class="form-control" required="required" placeholder="Enter Student's surname">
+      <span class="input-group-btn">
+        <button class="btn btn-danger  type="submit" > Find! </button> </span>
+    
   </div>
-{% endblock %}
-</div>
-      
-    </div><!--/.fluid-container-->
+  
+  </div>
 
-    <!-- Le javascript
-    ================================================== -->
+</form>
+   
+<table class="table table-striped table-bordered table-condensed">
+                     					 <thead>
+                       						 <tr>
+                              
+                               				 <th> <a  style  = " position:relative;margin-left:10px;"><h>ID </h> </a></th>
+                                   <th> <a  style  = " position:relative;margin-left:10px;"><h>Student </h> </a></th>
+                                         		
+						
+                                             			</tr>
+                                                         </thead>
+
+
+								<tbody>
+      									{% for student in students %}
+      									<tr>
+      									 <th><h><span class="muted"> </span>{{student.studentID}} &nbsp</h></th>
+        									<th><h> <a href="/beige/school/sch-search/?q={{student.studentID}}">{{student.fullnameC}}</a> &nbsp</h></th>
+        									
+      									</tr>
+      									
+      									{% endfor %}
+      									
+    								</tbody>
+  							</table>  
+
+
+  </div>
+
+</div>
+  {% endblock %}    
+    </div>
+
+    <!-- Le javascript -->
+    <!--================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-   <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="/static/bootstrap/dist/js/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/static/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+ 	 	$(function(){
+ 	 	$('#myModal').modal('show');
+ 	 	
+ 	 	})	
+ 	 	</script>
    <script type="text/javascript">
 
   $(function){
      $(".alert").alert()}
      </script>
   </body>
-</html>
+ </html> 

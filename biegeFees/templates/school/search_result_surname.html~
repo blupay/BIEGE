@@ -1,0 +1,59 @@
+{% extends "school/dashboard.html" %}
+
+{%block title%}<title> Search Result</title> {%endblock title%}
+
+
+{% block content %}
+
+<div class="panel panel-primary">
+<div class="panel-heading">Search results ( {{student_|length}} ) Found  <a href="/beige/school/dashboard/" style="color:white"> <span  class="glyphicon glyphicon-refresh"> </span> </a></div>
+  <div class="panel-body">
+  
+  {% ifnotequal student_|length 0 %}
+   <table class="table table-striped table-bordered table-condensed">
+                     					 <thead>
+                       						 <tr>
+                                    <th> <a  style  = " position:relative;margin-left:10px;"><h>ID </h> </a></th>
+                               				 <th> <a  style  = " position:relative;margin-left:10px;"><h>Name </h> </a></th>
+                                   
+						
+                                             			</tr>
+                                                         </thead>
+
+
+								<tbody>
+      									{% for trans in student_ %}
+      									<tr>
+        									<th><h><span class="muted"> </span>{{trans.studentID}} &nbsp</h></th>
+        									
+      								
+      									
+      								
+        									<th><h> <a href="#">{{trans.fullnameC}}</a> &nbsp</h></th>
+        									
+      									</tr>
+      									
+      									{% endfor %}
+      									
+    								</tbody>
+  							</table>  
+  
+  
+  {% endifnotequal %}
+  
+  
+ 
+
+</div>
+</div>
+
+
+
+
+
+</div>
+
+{% endblock %}
+
+
+

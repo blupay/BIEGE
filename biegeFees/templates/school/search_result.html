@@ -21,6 +21,7 @@
                                          		 
                                          		 <th><a  style  = " position:relative;margin-left:10px;"><h>Payment Amount</h></a> </th>
                                          		 
+                                         		 <th><a  style  = " position:relative;margin-left:10px;"><h>Branch</h></a> </th>
                                          		 <th><a  style  = " position:relative;margin-left:10px;"><h>Teller</h></a> </th>
 						
                                              			</tr>
@@ -30,9 +31,10 @@
 								<tbody>
       									{% for trans in student_trans %}
       									<tr>
-        									<th><h><span class="muted">--- </span>{{trans.date_added}} &nbsp</h></th>
+        									<th><h><span class="muted"></span>{{trans.date_added}} &nbsp</h></th>
         									<th><h><span class="muted"></span>{{trans.feesType}} &nbsp</h></th>
         									<th><h><span class="muted"> </span>{{trans.amount}}&nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{trans.tellerID.branch.branch_name}}&nbsp</h></th>
         									<th><h><span class="muted"> </span>{{trans.tellerID}}&nbsp</h></th>
       									</tr>
       									

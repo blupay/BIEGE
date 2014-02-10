@@ -20,7 +20,7 @@
         Fee Type : {{this_transaction.feesType}}<br>            
         Amount :  <font style="color:red;">GHS {{this_transaction.amount}}</font> <br>
         Payment by: {{this_transaction.payment_by}}
-        <p>Attended to by: </p>
+        <p>Teller: </p>
          Name: {{this_transaction.tellerID.fullName}} <br>
          Branch : {{this_transaction.branch}}
         
@@ -49,7 +49,7 @@
    <h4> <font color="grey">Student ID :</font> {{student_.studentID}}</h4>
    <h4> <font color="grey">Student :</font> {{student_.fullnameC}}</h4>
    <h4> <font color= "grey">School : </font> {{student_.schoolID.schoolName}}</h4>
-   <button  class="btn btn-lg btn-danger btn-block"  onclick="window.location.href='/beige/st_details/{{student_.pk}}/True/'" type="submit" style ="width:250px; margin-top:-90px; margin-left:540px;"value="">
+   <button  class="btn btn-lg btn-danger btn-block"  onclick="window.location.href='/beige/st_details/{{student_.pk}}/True/'" type="buttom" style ="width:250px; margin-top:-90px; margin-left:540px;"value="">
   <h2>Make Payment</h2></button>
 
 <ul class="nav nav-tabs" style="background-color:; margin-top:5px;">
@@ -82,11 +82,11 @@
 								<tbody>
       									{% for trans in student_trans %}
       									<tr>
-      									<th style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{forloop.counter}} &nbsp</h></th>
-        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{trans.date_added}} &nbsp</h></th>
-        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"></span>{{trans.feesType}} &nbsp</h></th>
-        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{trans.amount}}&nbsp</h></th>
-        									<th  style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span> {{trans.branch}} &nbsp</h></th>
+      									<th {% ifnotequal color '' %}style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}" {% endifnotequal %}><h><span class="muted"> </span>{{forloop.counter}} &nbsp</h></th>
+        									<th {% ifnotequal color '' %} style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}" {% endifnotequal %}><h><span class="muted"> </span>{{trans.date_added}} &nbsp</h></th>
+        									<th  {% ifnotequal color '' %}style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}" {% endifnotequal %}><h><span class="muted"></span>{{trans.feesType}} &nbsp</h></th>
+        									<th {% ifnotequal color '' %} style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}" {% endifnotequal %}><h><span class="muted"> </span>{{trans.amount}}&nbsp</h></th>
+        									<th {% ifnotequal color '' %} style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}" {% endifnotequal %}><h><span class="muted"> </span> {{trans.branch}} &nbsp</h></th>
         									
         									<th style="{% ifequal forloop.counter 1 %}background:#F6F7B2; {% endifequal %}"><h><span class="muted"> </span>{{trans.tellerID}}&nbsp</h></th>
         									<th><h><span class="muted"> </span> <a href ="/beige/print/{{trans.pk}}/True/">print</a>&nbsp</h></th>
