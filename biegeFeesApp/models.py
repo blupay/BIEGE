@@ -15,19 +15,71 @@ from suit.admin import SortableModelAdmin
 import reversion
 from reversion.helpers import patch_admin
 
-
 class Programme(models.Model):
 	name = models.CharField(max_length=20,help_text ="Programme Name")
 	date_added = models.DateTimeField(auto_now_add=True)
       	date_updated = models.DateTimeField(auto_now=True)
+      	
+
 	def __unicode__(self):
               return "%s" %(self.name)
         
+'''
+class YourModel(AuditedModel):
+    YOURMODEL_STATUS = ((0, 'New'), (1, 'Waiting Approval'), (2, 'Approved'))
+    name = models.CharField(max_length=100)
+    status = models.SmallIntegerField(choices=YOURMODEL_STATUS)
+    items = models.ManyToManyField(Programme)
+
+    def __unicode__(self):
+              return "%s" %(self.name)
+
+    #So far everything seems normal, now we get to the Audit config
+    audit = AuditOptions()
+    audit.add('name', 'General', audit.type.normal)
+    audit.add('status', 'General', audit.type.normal)
+    audit.add('items', 'Items', audit.type.m2m)
+    #audit.add(FIELD_NAME, GROUP, FIELD_TYPE, public=False)
+    #if you set public to true it creates a public audit trail
+    #that only tracks changes to fields you set as public
+    #There is still the admin only audit trail that tracks
+    #changes to all fields you add
+
+    def audit_name(self):
+        """You can put whatever you want here, the system
+           only records it in the DB but does not used it
+           you might use it for filtering or something in your
+           own audit history views"""
+        return u'YourModel({pk})'.format(pk=self.pk)
+
+    def audit_status_formatter(self, value):
+        """audit_FIELD_NAME_formatter lets you decide how you
+           want the data for this field to be stored and
+           represented in the audit history"""
+        if value is None:
+            return value
+
+        for idx, v in self.YOURMODEL_STATUS:
+            if idx == int(value):
+                return v
+
+    #def audit_items_formatter(self, value):
+       # if value is None:
+            #return value
+
+       # if isinstance(value, models.Model):
+           # item = value
+        #else:
+           # item = Programme.objects.get(pk=value)
+
+       # return u'{name}'.format(name=item.name)
 
 
+
+'''
 class BeigeSchool(models.Model):
 	schoolID = models.CharField('ID',max_length=10,blank=False,null=False)
-	schoolName = models.CharField('School Name',max_length=50,blank=False,null=False)
+	schoolName = models.CharField('School Name',unique = True,max_length=50,blank=False,null=False)
 	schoolName_short = models.CharField('Abbreviation(School_Name)',max_length=15, blank= True, null = True)
 	postalAddress = models.TextField(blank=False,null=False)
 	phoneNumber = models.CharField('mobile',max_length=15,blank=True,null=True)
@@ -126,8 +178,8 @@ class BeigeUser(models.Model):
 class Students(models.Model):
       studentID = models.CharField('ID',max_length=10,blank=True,null=True)
       schoolID = models.ForeignKey(BeigeSchool, verbose_name ='School',blank=False,null=False)
-      surname	 = models.CharField(max_length=20,blank=True,null=True)
-      othername = models.CharField(max_length=20,blank=True,null=True)
+      surname	 = models.CharField(max_length=20,blank=False,null=False)
+      othername = models.CharField('Other Name(s)',max_length=20,blank=True,null=True)
       email = models.EmailField(max_length=40, blank=True,null=True)
       mobile_number = models.CharField(max_length=10,blank=True,null=True)
       gender = models.CharField(max_length=6, choices = (('Male', 'Male'), 
@@ -270,7 +322,8 @@ class BeigeTransaction(models.Model):
 	feesType = models.ForeignKey(FeesCategory,blank=False,null=False)
 	otherFeesType = models.CharField(max_length=20,blank=True, null=True, default=None,help_text ="Enter Other FeesType if applicable")
 	amount = models.FloatField('Amount(GHS)',null = False,blank=False, default = 0.0)
-	payment_by = models.CharField(max_length=50, blank = True, null =True, default = 'Self' )
+	payment_by = models.CharField(max_length=50, blank = True, null =True)
+	mobile_number = models.CharField(max_length = 14, blank = False, null = False)
 	date_added = models.DateTimeField(auto_now_add=True)
         date_updated = models.DateTimeField(auto_now=True)		
 	
@@ -322,7 +375,7 @@ class StudentInline(admin.TabularInline):
 
 
 class BeigeUserAdmin(admin.ModelAdmin):
-        actions = None
+        #actions = None
 	list_display = ('username','first_name','last_name','email','mobile_number','branch','last_login','added_by','date_added','last_updated_by','date_updated',)
 	ordering = ['-date_added']
         list_filter = ('branch__branch_name',)
@@ -357,7 +410,7 @@ class BeigeBranchAdmin(reversion.VersionAdmin,admin.ModelAdmin):
        
              
 class SchoolUserAdmin(admin.ModelAdmin):
-        actions = None
+       # actions = None
 	list_display = ('username','first_name','last_name','email','School','date_added','date_updated',)
 	ordering = ['-date_added']
         list_filter = ('School__schoolName',)
@@ -479,4 +532,5 @@ admin.site.register(Students,StudentsAdmin)
 admin.site.register(FeesCategory,FeesCategoryAdmin)
 admin.site.register(BeigeTransaction,BeigeTransactionAdmin)
 admin.site.register(Fees_category_school,SchoolFeesCategoryAdmin)
+#admin.site.register(YourModel)
 

@@ -1,0 +1,132 @@
+{% extends "beige/dashboard.html" %}
+
+{%block title%}<title>Payment| Walk In</title> {%endblock title%}
+
+
+{% block content %}
+
+<div class="panel panel-danger">
+  <!-- Default panel contents -->
+  <div class="panel-heading">New Transaction</div>
+  <div class="panel-body">
+  {% ifnotequal is_allowed '' %}
+  <div class="alert alert-danger fade in"> You Don't have Permission to perform this transaction! Contact System Administrator</div>
+  
+  {% endifnotequal %}
+  
+ <form class="form-horizontal" role="form" action="." method="post">
+   <div class="form-group">
+  
+    <label class="col-sm-2 control-label"> Surname</label>
+    <div class="col-sm-6"> 
+      <input type="text"  name="surname" required="required" class="form-control" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  placeholder="Enter student's surname">
+    </div>
+  </div>
+  <div class="form-group">
+  
+    <label class="col-sm-2 control-label"> Other Name(s)</label>
+    <div class="col-sm-6"> 
+      <input type="text"  name="othername" required="required" class="form-control" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  placeholder="Enter student's othername(s)">
+    </div>
+  </div>
+  
+  
+  <div class="form-group">
+  
+    <label class="col-sm-2 control-label"> Student's ID</label>
+    <div class="col-sm-6"> 
+      <input type="text"  name="id" required="required" class="form-control" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  placeholder="Enter student's ID">
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label class="col-sm-2 control-label">School</label>
+    <div class="col-sm-6">
+   <select class="form-control" name="school"  >
+   <option value="0" selected="selected" disabled>-Select-</option>
+  
+   {% for sch in schools %}
+ <option value="{{sch.schoolName}}">{{sch.schoolName}} </option>
+{% endfor %}  
+ 
+   </select>
+    </div>
+  </div>
+   <div class="form-group">
+    <label  class="col-sm-2 control-label">Fees Type</label>
+    <div class="col-sm-6">
+   <select class="form-control" name="fee" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %} >
+   <option value="0" selected="selected" disabled>-Select-</option>
+  {% for c in fees_all %}
+ <option value="{{c.name}}">{{c.name}}  </option>
+{% endfor %}  
+
+   </select>
+    </div>
+  </div>
+  <div class="form-group">
+ 
+    <label  class="col-sm-2 control-label">Amount</label>
+    <div class="col-sm-6"> {% ifequal amount_error '' %} <font color="red">field required *</font> {% endifequal %}
+      <input type="number" step="any" name="amt"  require ="required" class="form-control" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  placeholder="Amount">
+    </div>
+  </div>
+  <div class="form-group">
+  
+    <label class="col-sm-2 control-label">Payment By</label>
+    <div class="col-sm-6"> 
+      <input type="text"  name="paidby" required= "required" class="form-control" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  placeholder="Enter Name">
+    </div>
+  </div>
+<div class="form-group">
+  
+    <label class="col-sm-2 control-label">Mobile Number</label>
+    <div class="col-sm-6"> 
+      <input type="tel"  name="mobile" required= "required" class="form-control" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  placeholder="Enter Mobile number">
+    </div>
+  </div>
+
+<button class="btn btn-lg btn-primary btn-block" name="" type="submit" value="" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  style="width:150px;">Submit</button>
+</form>
+
+
+</div>
+</div>
+
+
+{% ifnotequal pop '' %}
+
+
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Confirm Payment</h4>
+      </div>
+      <div class="modal-body">
+        <p>Confirm Fees for <br>
+        ID : {{student_.studentID}}<br>
+        Fullname : {{student_.fullnameC}}<br>
+        Fee Type : {{getFee}}<br>            
+        Amount :  <h1 style="color:red;">GHS {{getAmt}}</h1>
+        
+        
+        
+        
+        
+        </p>
+      </div>
+      <div class="modal-footer">
+      <form class="form-horizontal" role="form" action="." method="post">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="submit" name="Confirm" value ="Confirm" class="btn btn-primary">Confirm Payment</button>
+      </form>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+     {% endifnotequal %}
+
+{% endblock %}

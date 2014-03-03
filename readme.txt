@@ -31,6 +31,13 @@ Timeline: 05/02/2013
 Timeline: 11/02/2013
 1. Schools fees setup
 2. View fees by academic year
-3. 
 
+Timeline 12/02/2013
+1. Mask URLS
+2. History of everything happening in the system--on going
+3. Hide password field in Django Users
+4. update of the users
+5. update of schools
+6. teller should view reports by him/her
+7. Add student's ID during a transaction
 

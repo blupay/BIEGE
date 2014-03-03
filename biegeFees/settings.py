@@ -143,7 +143,7 @@ MIDDLEWARE_CLASSES = (
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
-
+DJANGO_SIMPLE_AUDIT_ACTIVATED = True
 ROOT_URLCONF = 'biegeFees.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -193,7 +193,7 @@ INSTALLED_APPS = (
      'countries',
      'model_report',
      'django_evolution',
-     
+    # 'audit',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

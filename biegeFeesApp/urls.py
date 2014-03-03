@@ -23,6 +23,7 @@ urlpatterns = patterns('',
                   url(r'^add_beige_user/$', 'biegeFeesApp.views.adduser_beige'),
 		  url(r'^school_details/(?P<id>\d+)/((?P<showDetails>.*)/)?$', 'biegeFeesApp.views.school_detail'),
                   url(r'^st_search/(?P<term>.*?)$','biegeFeesApp.views.student_search_beige'),
+                  url(r'^walk_in/$', 'biegeFeesApp.views.walk_in'),
 		 
                   
 			# Transaction Urls

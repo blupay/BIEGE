@@ -92,7 +92,7 @@ class HighchartRender(object):
         self.model.plotOptions.pie.dataLabels.enabled = true
         self.model.plotOptions.pie.dataLabels.color = '#000000'
         self.model.plotOptions.pie.dataLabels.connectorColor = '#000000'
-        repr_char = '$'  # TODO: Fix this
+        repr_char = 'GHS'  # TODO: Fix this
         repr_fun = 'fm'
         if self.config['serie_op'] == 'len':
             repr_char = ''

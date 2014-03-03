@@ -2,8 +2,8 @@
 <html>
 <head>
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css"/>
-    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-responsive.css"/>
+    <link rel="stylesheet" href="/static/bootstrap-old/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/static/bootstrap-old/css/bootstrap-responsive.css"/>
 
     
     <style type="text/css">
@@ -79,7 +79,7 @@
       }
       #forkme {position: fixed; top: 0; right: 0; z-index: 10000;}
     </style>
-    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-responsive.css"/>
+    <link rel="stylesheet" href="/static/bootstrap-old/css/bootstrap-responsive.css"/>
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -90,7 +90,7 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="brand" href="/">GoldStreet-Home</a>
+          <a class="brand" href="/beige">logout</a>
 
         </div>
       </div>
@@ -114,7 +114,7 @@
                   </a>
                 </p>
               </li>
-              <li class="nav-header">{% trans "GOLDSTREET Report list" %}</li>
+              <li class="nav-header">{% trans "Transaction Report list" %}</li>
               {% block sidebar %}
 
 

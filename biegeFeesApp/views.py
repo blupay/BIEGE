@@ -206,7 +206,28 @@ def adduser_sch(request):
 	#	return HttpResponseRedirect('/beige/login')
 	form = RegisterForm2(request.POST)
         form1 = SchUserForm(request.POST)
-        schools = BeigeSchool.objects.all()    
+        schools = BeigeSchool.objects.all() 
+        pi =''
+        useR = ''
+        password =''
+        try:
+		if request.session['pi']== 'on':
+		   	pi = 'on'
+		   	try: 
+		   		useR = request.session['useR']
+		   		password = request.session['pass']
+		   	except MultiValueDictKeyError:
+		   	       	request.session['useR'] =''
+		   	       	request.session['pass'] =''
+		   	
+		        request.session['pi']= ''
+		        
+		        
+		        
+        except KeyError:
+                request.session['pi']= '' 
+                request.session['useR'] =''  
+                request.session['pass'] =''  
         
 	if request.method == 'POST':
        
@@ -220,6 +241,7 @@ def adduser_sch(request):
 		    authUser.first_name = request.POST['first_name']
 		    authUser.last_name = request.POST['last_name']
 		    authUser.email     = request.POST['email']
+		    request.session['pass'] = request.POST['password1']
 		    #authUser.is_staff = True
 		    #authUser.password = request.POST['password1']
 		    authUser.save()
@@ -237,13 +259,14 @@ def adduser_sch(request):
 		    schuser.last_name=request.POST['last_name']
 		    schuser.email=request.POST['email']
 		    #schuser.mobile_number=form1.cleaned_data["mobile_number"]
-		    
+		    request.session['useR'] = request.POST['username']
+		    #request.session['pass'] = request.POST['password']
 		    schuser.save()
-		    print 4
-		    return HttpResponseRedirect('/beige/beige/dashboard/')
+		    request.session['pi']= 'on'
+		    return HttpResponseRedirect('/beige/add_school_user/')
 	       else:
 		    pass 
-	return render_to_response("beige/adduser.html", {'request':request.path,'schools':schools,'form' : form,'form1' : form1,'user':request.user})
+	return render_to_response("beige/adduser.html", {'request':request.path,'password':password,'useR':useR,'pi':pi,'schools':schools,'form' : form,'form1' : form1,'user':request.user})
 
 # add beige users views
 class beigeUserForm(ModelForm):
@@ -822,7 +845,65 @@ def student_search_beige(request,term):
         #iterm = ''
         #request.session['item'] = ''
 	return render_to_response('beige/search_result_beige.html',{'request':request.path,'get_school':get_school,'nstudent_':nstudent_,'iterm':iterm,'student_':student_,'user':request.user})
+ 
+ 
+@csrf_exempt 
+def walk_in (request):
+        if request.user.username == '':
+		return HttpResponseRedirect('/beige/login')
+        is_allowed = ''   	
+      	try:
+      	        schools = BeigeSchool.objects.all()
+        	fees_all = FeesCategory.objects.all()
+        	try:
+        		get_fee = FeesCategory.objects.get(name=request.POST['fee'])
+        	except MultiValueDictKeyError:
+        	         pass
+        except Fees_category_school.DoesNotExist:
+                pass
+        pop = ''
         
+        try:
+        	if request.session['vi'] =='on':
+        		pop = 'on'
+        		request.session['vi'] =''
+        except KeyError:
+               request.session['vi'] = ''
+        	
+	try:
+		get_is_allowed = BeigeUser.objects.get(username=request.user.username)
+	except BeigeUser.DoesNotExist:
+		is_allowed = "no"
+		
+	if request.method == 'POST':
+	        student = Students()
+	        get_school = BeigeSchool.objects.get(schoolName = request.POST['school'])
+	        student.surname  = request.POST['surname']
+	        student.othername = request.POST['othername']
+	        student.studentID = request.POST['id'].upper()
+	        student.schoolID  = get_school
+	        try:
+	        	Students.objects.get(studentID = request.POST['id'].upper()) 
+	        except Students.DoesNotExist:
+	                student.save()
+	      	print Students.objects.get(studentID = request.POST['id'].upper()) 
+		newpay = BeigeTransaction()
+		try:
+		        get_student = Students.objects.get(studentID = request.POST['id'].upper())
+			newpay.tellerID = BeigeUser.objects.get(username=request.user.username)
+			newpay.amount= request.POST['amt']
+			newpay.studentID = get_student
+		        newpay.payment_by = request.POST['paidby']
+		        newpay.feesType = get_fee
+		        newpay.mobile = request.POST['mobile']
+		        newpay.save()
+		        request.session['vi'] = 'on'
+		        return HttpResponseRedirect('/beige/walk_in/')
+		        
+		except Students.DoesNotExist:
+			return HttpResponseRedirect('/beige/std_details/'+str(get_student.pk)+'/True/')
+        return render_to_response('beige/walkIn.html',{'request':request.path,'schools':schools,'pop':pop,'fees_all':fees_all,'is_allowed':is_allowed,'user':request.user})
+	      
 	
 '''PAYMENT DETIALS'''
 @csrf_exempt

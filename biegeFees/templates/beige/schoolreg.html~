@@ -47,13 +47,7 @@
   <!-- Default panel contents -->
   <div class="panel-heading">School Registration </div>
   <div class="panel-body">
-  {% if errors %}
-<ul>
-{% for error in errors %}
-<li>{{ error }}</li>
-{% endfor %}
-</ul>
-{% endif %}
+  
  <form class="form-horizontal"   action="." method="post" >
  
  <div class="form-group">
@@ -110,24 +104,19 @@
   </div>
   </div>
   
- <div id="itemRows" class="form-group">
-    <label for="inputEmail3"  class="col-sm-2 control-label">Location</label>
-    <div class="col-sm-6">
-     <input type="text" name="loc"  required= "required" title=""   pattern =".{2,30}" class="form-control"  placeholder="Location">
-    </div>
-  </div> 
+ 
   
-  <div id="itemRows">
+  <!--<div id="itemRows">
 	<div class="form-group">
 	 <label for="inputEmail3"  class="col-sm-2 control-label">Location</label>
 	 <div class="col-sm-6">
 	<input class = "form-control" type="text" name="add_qty" />
 	</div>
 	 <input onclick="addRow(this.form);" type="button" class="btn btn-primary" value="Add row" />
-	</div>
+	</div>-->
 	
 	
-	</div>
+	
 	
 	
 	

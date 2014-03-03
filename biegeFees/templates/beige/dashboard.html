@@ -231,7 +231,8 @@ span.reference{
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/beige/payment/" style="">New Transaction</a></li>
+            <li><a href="/beige/payment/" style="color:white;">New Transaction</a></li>
+            <li><a href="/beige/walk_in/" style="color:white; {% ifequal request '/beige/walk_in/' %}background-color:#F5D8D4; color:black;{% endifequal %}" >Walk In</a></li>
             <li><a href="Reports"></a></li>
             
           </ul>
@@ -278,7 +279,7 @@ span.reference{
     <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-user"></span>&nbsp &nbsp Beige User</h4>
     <p class="list-group-item-text">Setup User for Beige Branches</p>
   </a>  
-  <a href="/report/" class="list-group-item " style=" {% ifequal request '/report/' %}background-color:#F5D8D4;{% endifequal %}">	
+  <a href="/report/transactions-report/" class="list-group-item " style=" {% ifequal request '/report/' %}background-color:#F5D8D4;{% endifequal %}">	
     <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-user"></span>&nbsp &nbsp Beige Reports</h4>
     <p class="list-group-item-text">View Reports</p>
   </a>  
