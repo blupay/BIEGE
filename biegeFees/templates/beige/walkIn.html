@@ -35,7 +35,7 @@
   
     <label class="col-sm-2 control-label"> Student's ID</label>
     <div class="col-sm-6"> 
-      <input type="text"  name="id" required="required" class="form-control" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  placeholder="Enter student's ID">
+      <input type="text"  name="stid" required="required" class="form-control" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  placeholder="Enter student's ID">
     </div>
   </div>
   
@@ -86,7 +86,7 @@
     </div>
   </div>
 
-<button class="btn btn-lg btn-primary btn-block" name="" type="submit" value="" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  style="width:150px;">Submit</button>
+<button class="btn btn-lg btn-primary btn-block" name="preconfirm" type="submit" value="preconfirm" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  style="width:150px;">Submit</button>
 </form>
 
 
@@ -106,8 +106,8 @@
       </div>
       <div class="modal-body">
         <p>Confirm Fees for <br>
-        ID : {{student_.studentID}}<br>
-        Fullname : {{student_.fullnameC}}<br>
+        ID : {{get_student}}<br>
+        Fullname : {{get_student.fullnameC}}<br>
         Fee Type : {{getFee}}<br>            
         Amount :  <h1 style="color:red;">GHS {{getAmt}}</h1>
         
@@ -118,9 +118,9 @@
         </p>
       </div>
       <div class="modal-footer">
-      <form class="form-horizontal" role="form" action="." method="post">
+      <form class="form-horizontal" action="." method="post">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="submit" name="Confirm" value ="Confirm" class="btn btn-primary">Confirm Payment</button>
+        <button type="submit" name="confirm" value ="confirm" class="btn btn-primary">Confirm Payment</button>
       </form>
       </div>
     </div><!-- /.modal-content -->

@@ -1,19 +1,23 @@
 from django.contrib import admin
 from django.db import models
 from countries.models import Country
-
+from django import template
 from django.utils.timezone import now
 from datetime import date,time
 import datetime,random, sha, hashlib
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 # Create your models here.
+from django.template.defaultfilters import stringfilter
 from import_export.admin import ImportExportMixin
 from django.forms import ModelForm
 from suit.widgets import SuitDateWidget, SuitTimeWidget, SuitSplitDateTimeWidget,HTML5Input
 from suit.admin import SortableModelAdmin
 import reversion
+import string
 from reversion.helpers import patch_admin
+from audit_trail.models import *
+
 
 class Programme(models.Model):
 	name = models.CharField(max_length=20,help_text ="Programme Name")
@@ -24,63 +28,25 @@ class Programme(models.Model):
 	def __unicode__(self):
               return "%s" %(self.name)
         
-'''
-class YourModel(AuditedModel):
-    YOURMODEL_STATUS = ((0, 'New'), (1, 'Waiting Approval'), (2, 'Approved'))
-    name = models.CharField(max_length=100)
-    status = models.SmallIntegerField(choices=YOURMODEL_STATUS)
-    items = models.ManyToManyField(Programme)
-
-    def __unicode__(self):
-              return "%s" %(self.name)
-
-    #So far everything seems normal, now we get to the Audit config
-    audit = AuditOptions()
-    audit.add('name', 'General', audit.type.normal)
-    audit.add('status', 'General', audit.type.normal)
-    audit.add('items', 'Items', audit.type.m2m)
-    #audit.add(FIELD_NAME, GROUP, FIELD_TYPE, public=False)
-    #if you set public to true it creates a public audit trail
-    #that only tracks changes to fields you set as public
-    #There is still the admin only audit trail that tracks
-    #changes to all fields you add
-
-    def audit_name(self):
-        """You can put whatever you want here, the system
-           only records it in the DB but does not used it
-           you might use it for filtering or something in your
-           own audit history views"""
-        return u'YourModel({pk})'.format(pk=self.pk)
-
-    def audit_status_formatter(self, value):
-        """audit_FIELD_NAME_formatter lets you decide how you
-           want the data for this field to be stored and
-           represented in the audit history"""
-        if value is None:
-            return value
-
-        for idx, v in self.YOURMODEL_STATUS:
-            if idx == int(value):
-                return v
-
-    #def audit_items_formatter(self, value):
-       # if value is None:
-            #return value
-
-       # if isinstance(value, models.Model):
-           # item = value
-        #else:
-           # item = Programme.objects.get(pk=value)
-
-       # return u'{name}'.format(name=item.name)
+        def save(self,*args,**kwargs):
+                get_user = User.objects.get(pk =1)
+                audit = AuditTrail(object_id=self.pk,name =self.name, type=1,action=0,audit_on=date.today(),modified_by=get_user)
+                audit.save(*args,**kwargs)
+		super(Programme,self).save(*args, **kwargs)
+		
+        def delete(self,*args,**kwargs):
+                get_user = User.objects.get(pk =1)
+                audit = AuditTrail(object_id=self.pk,name =self.name, type=1,action=2,audit_on=date.today(),modified_by=get_user)
+                audit.save(*args,**kwargs)
+		super(Programme,self).delete(*args, **kwargs)
 
 
 
-'''
+
 class BeigeSchool(models.Model):
 	schoolID = models.CharField('ID',max_length=10,blank=False,null=False)
 	schoolName = models.CharField('School Name',unique = True,max_length=50,blank=False,null=False)
-	schoolName_short = models.CharField('Abbreviation(School_Name)',max_length=15, blank= True, null = True)
+	schoolName_short = models.CharField('Abbreviation',max_length=15, blank= True, null = True)
 	postalAddress = models.TextField(blank=False,null=False)
 	phoneNumber = models.CharField('mobile',max_length=15,blank=True,null=True)
 	tel_no     = models.CharField('tel',max_length=15,blank = True, null= True)
@@ -90,6 +56,7 @@ class BeigeSchool(models.Model):
                                                    ))
         email_add = models.EmailField(blank = True, null= True)
         programmes = models.ManyToManyField(Programme, blank = True, null = True, related_name = "program")
+        slug	       =  models.CharField('hash key',max_length=30,blank = True, null = True,unique=True)
 	date_added=models.DateTimeField(auto_now_add=True,blank=True,null=True)
      	date_updated=models.DateTimeField(auto_now=True,blank=True,null=True)
 
@@ -106,9 +73,21 @@ class BeigeSchool(models.Model):
 
 	def __unicode__(self):
               return "%s-%s" %(self.schoolID,self.schoolName)
-
+              
+	def to_upper(self):
+		if self.schoolName:
+			self.schoolName = self.schoolName.upper()
+		return self.schoolName
+		
+	# generate Key
+	def id_generator(self,size=20, chars=string.ascii_lowercase + string.digits):
+	        if self.slug =='':
+	    	     self.slug =''.join(random.choice(chars) for x in range(size))
+	    	else:
+	    		return self.slug
 
 	def save(self,*args,**kwargs):
+		self.id_generator()
                 self.school_ID()
 		super(BeigeSchool,self).save(*args, **kwargs)
                 return True
@@ -160,7 +139,11 @@ class BeigeUser(models.Model):
 	email = models.EmailField(max_length=50, unique=True,blank=True,null=True)
 	mobile_number = models.CharField(unique = True, max_length = 50,blank = True,null = True)
         added_by   = models.CharField(max_length = 50,blank=True, null = True)
+        category     = models.CharField(max_length=10, default="Teller", choices = (("Supervisor", "Supervisor"),("Teller", "Teller")))
+	online_status  = models.BooleanField(default=False)
+	active    = models.BooleanField(default=False,help_text = "Designates whether this user should be treated as active. Unselect this instead of deleting accounts.")
         last_updated_by = models.CharField(max_length = 50,blank=True, null = True)
+        slug	       =  models.CharField('hash key',max_length=30,blank = True, null = True,unique=True)
 	date_added = models.DateTimeField(auto_now_add=True)
         date_updated = models.DateTimeField(auto_now=True)
         
@@ -174,9 +157,31 @@ class BeigeUser(models.Model):
         def last_login(self):
              user_log = User.objects.get(username=self.username)
              return '%s' %(user_log.last_login.strftime("%b %d, %Y, %I:%M %p"))
+        # generate Key
+	def id_generator(self,size=20, chars=string.ascii_lowercase + string.digits):
+	        if self.slug =='':
+	    	     self.slug =''.join(random.choice(chars) for x in range(size))
+	    	elif self.slug==None:
+	    	     self.slug =''.join(random.choice(chars) for x in range(size))
+	    	else:
+	    		return self.slug
+         #TODO
+        #any update should update django users as well
+        def save(self,*args,**kwargs):
+                get_user = User.objects.get(username=self.username)
+                get_user.first_name = self.first_name
+                get_user.last_name = self.last_name
+                get_user.email = self.email
+                get_user.is_active = self.active
+                get_user.save(*args,**kwargs)
+                self.id_generator()
+		super(BeigeUser,self).save(*args, **kwargs)
+                
+                return True
+        
 
 class Students(models.Model):
-      studentID = models.CharField('ID',max_length=10,blank=True,null=True)
+      studentID = models.CharField('ID',max_length=15,unique=True)
       schoolID = models.ForeignKey(BeigeSchool, verbose_name ='School',blank=False,null=False)
       surname	 = models.CharField(max_length=20,blank=False,null=False)
       othername = models.CharField('Other Name(s)',max_length=20,blank=True,null=True)
@@ -191,9 +196,10 @@ class Students(models.Model):
       programme = models.CharField(max_length=20,blank=True,null=True)							
       Nationality =  models.ForeignKey(Country,default = "GH")
       residential_address = models.TextField(max_length=100,null= True, blank = True)
-      Guardian_name = models.CharField("Name Of Guardian",default ='None',help_text ="Please enter contact details of Next of Kin",max_length = 100,blank =True,null = True)
-      mobile_guardian =  models.CharField(max_length=10,default ='None',blank=True,null=True)
-      email_of_guardian = models.EmailField(max_length=40,default ='None', blank=True,null=True)
+      Guardian_name = models.CharField("Name Of Guardian",help_text ="Please enter contact details of Next of Kin",max_length = 100,blank =True,null = True)
+      mobile_guardian =  models.CharField(max_length=10,blank=True,null=True)
+      email_of_guardian = models.EmailField(max_length=60, blank=True,null=True)
+      slug	       =  models.CharField('hash key',max_length=30,blank = True, null = True,unique=True)
       date_added = models.DateTimeField(auto_now_add=True)
       date_updated = models.DateTimeField(auto_now=True)
       order        = models.PositiveIntegerField(default=0)
@@ -211,13 +217,23 @@ class Students(models.Model):
                 else:
                      return self.studentID
                  
-           
+      def to_upper(self):
+           if self.studentID:
+                self.studentID = ''.join(self.studentID.upper().strip().split())
+                #self.studentID = self.studentID.strip()
+           return self.studentID    
 
       def __unicode__(self):
-              return '%s-%s %s' %(self.studentID,self.surname,self.othername)
+              return '%s-%s %s' %(self.studentID,self.surname.upper(),self.othername.upper())
         
         
-
+     # generate Key
+      def id_generator(self,size=20, chars=string.ascii_lowercase + string.digits):
+                print "slug area"
+	        if self.slug ==None:
+	    	     self.slug =''.join(random.choice(chars) for x in range(size))
+	    	else:
+	    		return self.slug
 
       def Age(self):
                 
@@ -238,6 +254,8 @@ class Students(models.Model):
 	
       def save(self,*args,**kwargs):
                 self.student_ID()
+                self.to_upper()
+                self.id_generator()
                 #self.Age()
 		super(Students,self).save(*args, **kwargs)
                 
@@ -267,6 +285,11 @@ class SchoolUsers(models.Model):
 	last_name = models.CharField(max_length = 50,blank = True,null = True)
 	email = models.EmailField(max_length=50, unique=True,blank=True,null=True)
 	mobile_number = models.CharField(unique = True, max_length = 50,blank = True,null = True)
+	added_by   = models.CharField(max_length = 50,blank=True, null = True)
+	online_status  = models.BooleanField(default=False)
+	active    = models.BooleanField(default=False,help_text = "Designates whether this user should be treated as active. Unselect this instead of deleting accounts.")
+	last_updated_by = models.CharField(max_length = 50,blank=True, null = True)
+        slug	       =  models.CharField('hash key',max_length=30,blank = True, null = True,unique=True)
 	date_added = models.DateTimeField(auto_now_add=True)
         date_updated = models.DateTimeField(auto_now=True)
 
@@ -274,16 +297,49 @@ class SchoolUsers(models.Model):
         
         def edit(self):
                 return 'Click to edit'
+                
+        def last_login(self):
+             user_log = User.objects.get(username=self.username)
+             return '%s' %(user_log.last_login.strftime("%b %d, %Y, %I:%M %p"))
           
         def __unicode__(self):
 		return self.username
-     
+        
+        def  fullName(self):
+              return '%s, %s' %(self.last_name,self.first_name)
 
         class Meta:
                 verbose_name = "School User"
                 verbose_name_plural ="School Users"
+                
+        #id_generator
+        def id_generator(self,size=20, chars=string.ascii_lowercase + string.digits):
+	        if self.slug =='':
+	    	     self.slug =''.join(random.choice(chars) for x in range(size))
+	    	elif self.slug==None:
+	    	     self.slug =''.join(random.choice(chars) for x in range(size))
+	    	else:
+	    		return self.slug
 
-
+        
+        #TODO
+        #any update should update django users as well
+        def save(self,*args,**kwargs):
+                try:
+                	get_user = User.objects.get(username=self.username)
+                	get_user.first_name = self.first_name
+                	get_user.last_name = self.last_name
+                	get_user.email = self.email
+                	get_user.is_active = self.active
+                	get_user.save(*args,**kwargs)
+                except User.DoesNotExist:
+                        pass
+                self.id_generator()
+		super(SchoolUsers,self).save(*args, **kwargs)
+                
+                return True
+        
+        
 class Fees_category_school(models.Model):
        School = models.ForeignKey(BeigeSchool,related_name ='feesCat',blank=False,null=False)
        Name = models.CharField(help_text='Change with caution, changes affect what appears on receipt',max_length= 40, blank=False, null = False)
@@ -324,7 +380,13 @@ class BeigeTransaction(models.Model):
 	amount = models.FloatField('Amount(GHS)',null = False,blank=False, default = 0.0)
 	payment_by = models.CharField(max_length=50, blank = True, null =True)
 	mobile_number = models.CharField(max_length = 14, blank = False, null = False)
+        approval_status  = models.CharField(max_length =10, default ="PENDING",choices = (("PENDING", "PENDING"), 
+                                                    ("APPROVED", "APPROVED"),
+						    ("DECLINED", "DECLINED")
+                                                   ))
+        slug	  =  models.CharField('hash key',max_length=50,blank = True, null = True,unique=True)
 	date_added = models.DateTimeField(auto_now_add=True)
+	only_date = models.DateField(blank = True, null =True)
         date_updated = models.DateTimeField(auto_now=True)		
 	
 
@@ -340,13 +402,38 @@ class BeigeTransaction(models.Model):
                 
         def branch(self):
              return self.tellerID.branch.branch_name
+        
+        # generate Key
+        def id_generator(self,size=45, chars=string.ascii_lowercase + string.digits):
+                print "slug area"
+                print self.slug
+	        if self.slug ==None:
+	    	     self.slug =''.join(random.choice(chars) for x in range(size))
+	    	elif self.slug =='':
+	    	     self.slug =''.join(random.choice(chars) for x in range(size))
+	    	else:
+	    		return self.slug
 
+        
+        def strip_date(self):  
+        	if self.date_added:
+        	       if self.only_date==None:
+			       print self.only_date
+			       print self.date_added
+			       self.only_date = self.date_added.strftime("%Y-%m-%d")
+			       print self.only_date
+			       print 1231
+			       return self.only_date
+		       else:
+		               return self.only_date
 	def __unicode__(self):
               return "%s-%s" %(self.transactionID,self.tellerID)
         
         def save(self,*args,**kwargs):
                 self.transaction_ID()
-                #self.Age()
+                self.id_generator()
+                self.strip_date()
+                
 		super(BeigeTransaction,self).save(*args, **kwargs)
                 return True
 
@@ -356,6 +443,13 @@ class ChangeStudentForm(ModelForm):
         #model = Students
         widgets = {
             'dateOfBirth': HTML5Input(input_type='date'),
+            
+        }
+class ChangetransForm(ModelForm):
+    class Meta:
+        #model = Students
+        widgets = {
+            'only_date': HTML5Input(input_type='date'),
             
         }
         
@@ -376,11 +470,11 @@ class StudentInline(admin.TabularInline):
 
 class BeigeUserAdmin(admin.ModelAdmin):
         #actions = None
-	list_display = ('username','first_name','last_name','email','mobile_number','branch','last_login','added_by','date_added','last_updated_by','date_updated',)
+	list_display = ('username','first_name','last_name','email','mobile_number','branch','category','last_login','added_by','online_status','active',)
 	ordering = ['-date_added']
-        list_filter = ('branch__branch_name',)
+        list_filter = ('branch__branch_name','online_status','category','active',)
         search_fields = ('username','mobile_number','first_name','last_name',)
-        readonly_fields = ('added_by','last_updated_by',)
+        readonly_fields = ('username','branch','added_by','online_status','date_added','last_updated_by','slug',)
         obj = BeigeUser()
         #obj_auth = User()
         def save_model(self, request,obj,form,change):
@@ -389,9 +483,9 @@ class BeigeUserAdmin(admin.ModelAdmin):
              if  obj.added_by == None:
                         obj.added_by = request.user.username
              obj.save()
-        def __init__(self, *args, **kwargs):
-		super(BeigeUserAdmin,self).__init__(*args, **kwargs)
-		self.list_display_links = (None,)
+       # def __init__(self, *args, **kwargs):
+		#super(BeigeUserAdmin,self).__init__(*args, **kwargs)
+		#self.list_display_links = (None,)
 
 
 
@@ -411,14 +505,25 @@ class BeigeBranchAdmin(reversion.VersionAdmin,admin.ModelAdmin):
              
 class SchoolUserAdmin(admin.ModelAdmin):
        # actions = None
-	list_display = ('username','first_name','last_name','email','School','date_added','date_updated',)
+	list_display = ('username','fullName','email','School','last_login','added_by','online_status','active',)
 	ordering = ['-date_added']
-        list_filter = ('School__schoolName',)
+        list_filter = ('School__schoolName','online_status','active',)
         search_fields = ('username','first_name')
-        readonly_fields = ('School',)
+        readonly_fields = ('School','username')
+        
+        def save_model(self, request,obj,form,change):
+             
+             obj.last_updated_by = request.user.username
+             if  obj.added_by == None:
+                        obj.added_by = request.user.username
+             elif obj.added_by =='':
+             		obj.added_by = request.user.username
+             obj.save()
+        '''     
         def __init__(self, *args, **kwargs):
 		super(SchoolUserAdmin,self).__init__(*args, **kwargs)
 		self.list_display_links = (None,)
+        '''
 
 class SchoolFeesCategoryAdmin(reversion.VersionAdmin,admin.ModelAdmin):
         actions = None
@@ -455,7 +560,7 @@ class BeigeSchoolAdmin(reversion.VersionAdmin,admin.ModelAdmin):
 	list_filter = ('schoolName','schoolType')
 	search_fields = ('schoolID','schoolName','location','schoolType',)
 	
-	inlines = [StudentInline]
+	#inlines = [StudentInline]
 	ordering = ('-date_added',)
 
         #fieldsets = ( (None, {'fields':('schoolID','schoolName','programmes','postalAddress','phoneNumber','location','schoolType')}),)
@@ -478,9 +583,9 @@ class StudentsAdmin(ImportExportMixin,admin.ModelAdmin):
 	#inlines = [TransactionInline]
 	ordering = ('-date_added',)
 
-        fieldsets = ( (None, {'fields':('studentID','schoolID','surname','othername','gender','dateOfBirth','email','mobile_number','age','programme','Nationality','residential_address','Guardian_name','mobile_guardian','email_of_guardian')}),)
+        fieldsets = ( (None, {'fields':('studentID','schoolID','surname','othername','gender','dateOfBirth','email','mobile_number','age','programme','Nationality','residential_address','Guardian_name','mobile_guardian','slug','email_of_guardian')}),)
 
-        readonly_fields       = ('studentID','age',)
+        readonly_fields       = ('age','slug',)
         date_hierarchy    = 'date_added'
         list_per_page = 50
 
@@ -501,21 +606,22 @@ class FeesCategoryAdmin(reversion.VersionAdmin,admin.ModelAdmin):
 
 class BeigeTransactionAdmin(admin.ModelAdmin):
         actions = None
-        list_display =('transactionID','studentID','school','branch','tellerID','payment_by','feesType','amount','date_added','date_updated')
+        form=ChangetransForm
+        list_display =('transactionID','studentID','school','branch','tellerID','payment_by','feesType','amount','only_date','date_added','date_updated')
 	list_filter = ('studentID__schoolID','date_added','tellerID__branch__branch_name',)
 	search_fields = ('transactionID','^studentID__studentID','^tellerID__first_name',)
 	
 	#inlines = [TransactionInline]
 	ordering = ('-date_added',)
 
-        fieldsets = ( (None, {'fields':('transactionID','studentID','tellerID','form','feesType','otherFeesType','amount')}),)
+        fieldsets = ( (None, {'fields':('transactionID','studentID','tellerID','feesType','approval_status','amount','only_date','slug',)}),)
 
         readonly_fields   = ('transactionID','studentID','tellerID','form','feesType','otherFeesType','amount',)
         date_hierarchy    = 'date_added'
         list_per_page = 50
         def __init__(self, *args, **kwargs):
 		super(BeigeTransactionAdmin,self).__init__(*args, **kwargs)
-		self.list_display_links = (None,)
+		self.list_display_links = ()
         
         obj = BeigeTransaction()
         def save_model(self, request,obj,form,change):
@@ -532,5 +638,5 @@ admin.site.register(Students,StudentsAdmin)
 admin.site.register(FeesCategory,FeesCategoryAdmin)
 admin.site.register(BeigeTransaction,BeigeTransactionAdmin)
 admin.site.register(Fees_category_school,SchoolFeesCategoryAdmin)
-#admin.site.register(YourModel)
+
 

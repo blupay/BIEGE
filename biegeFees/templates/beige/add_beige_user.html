@@ -5,13 +5,50 @@
 
 {% block content %}
 
+
+{% ifnotequal ping '' %}
+
+
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#f2dede;">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"> THANKS</h4>
+      </div>
+      <div class="modal-body">
+        <p> <b style="color:;"></b> User's Account has been added succesfully <br>
+        Username : <b>{{get_user}}</b> <br>
+        
+        
+        
+        
+        </p>
+      </div>
+      <div class="modal-footer">
+      
+     
+      <button  class="btn  btn-primary "  onclick="window.location.href='/admin/'" type="buttom"  style =""value=""> Admin Panel
+  </button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        
+     
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+     {% endifnotequal %}
+
+
 <div class="panel panel-danger" style="background-color:; ">
   <!-- Default panel contents -->
   <div class="panel-heading">Add Beige Users </div>
   <div class="panel-body">
  <form class="form-horizontal" action="." method="post">
+ 
  <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">Select Branch</label>
+    <label  class="col-sm-2 control-label">Select Branch</label>
     <div class="col-sm-6">
    <select class="form-control" name="branch">
    <option value="0" selected="selected" disabled>-Select-</option>
@@ -32,49 +69,66 @@
   </div> -->
   
   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">First Name</label>
+    <label  class="col-sm-2 control-label">First Name</label>
     <div class="col-sm-6">
-      <input type="text" name="first_name" class="form-control" id="inputEmail3" placeholder="First Name">
+      <input type="text" name="first_name" required ="required"class="form-control"  placeholder="First Name">
     </div>
   </div>
   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">last Name</label>
+    <label  class="col-sm-2 control-label">last Name</label>
     <div class="col-sm-6">
-      <input type="text" name="last_name" class="form-control" id="inputEmail3" placeholder="last Name">
+      <input type="text" name="last_name" required ="required" class="form-control" placeholder="last Name">
     </div>
   </div>
   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">Mobile</label>
+    <label class="col-sm-2 control-label">Mobile</label>
     <div class="col-sm-6">
-      <input type="tel" name="mobile" class="form-control" id="inputEmail3" placeholder="Mobile">
+      <input type="tel" name="mobile" required ="required" class="form-control"  placeholder="Mobile">
     </div>
   </div>
   
   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+    <label  class="col-sm-2 control-label">Email</label>
     <div class="col-sm-6">
-      <input type="email" name="email" class="form-control" id="inputEmail3" placeholder="Email">
+      <input type="email" name="email" required ="required" class="form-control"  placeholder="Email">
     </div>
   </div>
+  
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Select Category</label>
+    <div class="col-sm-6">
+   <select class="form-control" name="category">
+   <option value="0" selected="selected" disabled>-Select-</option>
+   <option value="Supervisor" >Supervisor</option>
+   <option value="Teller" >Teller</option>
+   
+   </select>
+    </div>
+  </div> 
+  
  <!-- <div class="form-group">
     <label for="inputEmail3" class="col-sm-2 control-label">Password</label>
     <div class="col-sm-6">
       <input type="password" name="password1" class="form-control" id="inputEmail3" placeholder="Password">
     </div>
   </div> -->
- <fieldset style="border:2px;border-color:red; border-radius:20px;">
+<div class="form-group"  style="border:2px solid grey; margin-right:200px; margin-left:90px;  border-radius:10px; width: ;background:#F2F2F2;">
+ <fieldset>
+  <div class="col-sm-6" style="margin-bottom:2px;"> 
   <!--{{ form.as_p}}-->
   {% for field in form1 %}
   {{field.label_tag}}
-  {{field.errors}}
+  <font color="red">{{field.errors}}</font>
   {{field}}</br>
   {% endfor %}
+    </div>
   <!--{{ form1.as_p}}--> 
  
  </fieldset>
+</div>
 
- <div class="col-md-3">    
- <button class="btn btn-lg btn-primary btn-block" type="submit" value="">Add</button>
+ <div class="col-md-3" style="margin-left:200px;">    
+ <button class="btn btn-lg btn-warning btn-block" type="submit" value="">Add</button>
  </div>
 </form>
 </div>

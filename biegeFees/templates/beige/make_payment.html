@@ -13,10 +13,9 @@
   <div class="alert alert-danger fade in"> You Don't have Permission to perform this transaction! Contact System Administrator</div>
   
   {% endifnotequal %}
-  <h4> <font color= "grey">Account Name : </font> {{student_.fullnameC}}</h4>
-  <h4> <font color= "grey">System ID : </font> {{student_.studentID}}</h4>
+  <h4> <font color= "grey">Account Name : </font>  <a href="/beige/std_details/{{student_.slug}}/True/" style="color:brown;"> {{student_.fullnameC}} </a> </h4>
+  <h4> <font color= "grey">Student ID : </font> {{student_.studentID}}</h4>
    <h4> <font color= "grey">School : </font> {{student_.schoolID.schoolName}}</h4>
-  <a href="/beige/std_details/{{student_.pk}}/True/" style="color:brown;" > <span class="glyphicon glyphicon-arrow-left"></span> return</a>
  <form class="form-horizontal" role="form" action="." method="post">
    
    <div class="form-group">
@@ -26,7 +25,7 @@
    <option value="0" selected="selected" disabled>-Select-</option>
    {% ifnotequal fees|length 0 %}
    {% for c in fees %}
- <option value="{{c.Name}}">{{c.Name}} || {{c.expected_amount}} </option>
+ <option value="{{c.Name}}">{{c.Name}} </option>
 {% endfor %}  
  {% else %}
   {% for c in fees_all %}
@@ -40,14 +39,14 @@
   {{amount_error}}
     <label for="inputEmail3" class="col-sm-2 control-label">Amount</label>
     <div class="col-sm-6"> {% ifequal amount_error '' %} <font color="red">field required *</font> {% endifequal %}
-      <input type="number" step="any" name="amt" class="form-control" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  placeholder="Amount">
+      <input type="number" required="required" step="any" name="amt" class="form-control" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  placeholder="Amount">
     </div>
   </div>
   <div class="form-group">
   
     <label for="inputEmail3" class="col-sm-2 control-label">Payment By</label>
     <div class="col-sm-6"> 
-      <input type="text"  name="paid" class="form-control" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  placeholder="Enter Name">
+      <input type="text" required="required"  name="paid" class="form-control" {% ifnotequal is_allowed '' %} disabled {% endifnotequal %}  placeholder="Enter Name">
     </div>
   </div>
   <div class="form-horizontal">

@@ -44,16 +44,25 @@
   <div class="panel-body">
  <form class="form-horizontal" action="." method="post">
  <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">Select School</label>
-    <div class="col-sm-6">
-   <select class="form-control" name="sch">
+    <label  class="col-sm-2 control-label">Select School</label>
+    <div class="col-sm-6">  
+   <select class="form-control" name="sch"> 
+   {% ifnotequal get_school '' %}
+   <option value="{{get_school}}" selected="selected" disabled>{{get_school}} </option>
+   {% else %}
    <option value="0" selected="selected" disabled>-Select-</option>
    {% for sch in schools %}
  <option value="{{sch.schoolName}}">{{sch.schoolName}} </option>
-{% endfor %}  
- 
+{% endfor %} 
+ {% endifnotequal %} 
+
    </select>
-    </div>
+   
+   </div>
+   <div class="col-sm-1"> 
+  <h3 style="margin-top:0px; margin-left:-20px;">  <a href="/beige/add_school_user/" style="color:black;"> <span style="" class="glyphicon glyphicon-refresh" data-toggle="tooltip" title="Reload schools"> </span> </a>
+    </h3></div>
+    
   </div> 
   
   <div class="form-group">
@@ -70,13 +79,13 @@
   </div> -->
   
   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">First Name</label>
+    <label  class="col-sm-2 control-label">First Name</label>
     <div class="col-sm-6">
       <input type="text" name="first_name" class="form-control" required ="required" placeholder="First Name">
     </div>
   </div>
   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">last Name</label>
+    <label  class="col-sm-2 control-label">last Name</label>
     <div class="col-sm-6">
       <input type="text" name="last_name" class="form-control" required ="required" placeholder="last Name">
     </div>
@@ -84,7 +93,7 @@
   
   
   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+    <label  class="col-sm-2 control-label">Email</label>
     <div class="col-sm-6">
       <input type="email" name="email" class="form-control" required ="required" placeholder="Email">
     </div>
@@ -95,10 +104,10 @@
       <input type="password" name="password1" class="form-control" id="inputEmail3" placeholder="Password">
     </div>
   </div> -->
-  <div class="form-group" style="border:2px; margin-right:200px; margin-left:90px; border-color:brown; border-radius:20px; width: ;background:#F2F2F2; border-color:brown;">
+  <div class="form-group" style="border:2px solid grey; margin-right:200px; margin-left:90px;  border-radius:10px; width: ;background:#F2F2F2;">
  <fieldset>
   <!--{{ form.as_p}}-->
-    <div class="col-sm-6"> 
+    <div class="col-sm-6" style="margin-bottom:3px;"> 
   {% for field in form1 %}
 {{field.label_tag}}
   <font color="red">{{field.errors}}</font>
@@ -109,8 +118,8 @@
  
  </fieldset>
 </div>
- <div class="col-md-3">    
- <button class="btn btn-lg btn-primary btn-block" type="submit" value="">Register</button>
+ <div class="col-md-3" style="margin-left:200px;">    
+ <button class="btn btn-lg btn-warning btn-block" type="submit" value="">Register</button>
  </div>
 </form>
 </div>

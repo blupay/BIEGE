@@ -45,57 +45,58 @@
 
 <div class="panel panel-danger">
   <!-- Default panel contents -->
-  <div class="panel-heading">School Registration </div>
+  <div class="panel-heading">School Registration <font color="red" style="margin-left:20px;"><b>*</b></font> required fields</div>
   <div class="panel-body">
   
- <form class="form-horizontal"   action="." method="post" >
+ <form class="form-horizontal"  autocomplete="off" action="." method="post" >
  
  <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">School Name</label>
+    <label  class="col-sm-2 control-label">School Name <font color="red">*</font></label>
     <div class="col-sm-6">
       <input type="text" name="schName"  required="required" title="Enter a valid school name" pattern =".{5,50}"  class="form-control" placeholder="School Name">
+    
     </div>
   </div>
   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">Short Name</label>
+    <label class="col-sm-2 control-label">Short Name </label>
     <div class="col-sm-6">
-      <input type="text" name="shortName"  required= "required" title="Enter a valid Input"   pattern =".{2,15}" class="form-control" id="inputEmail3" placeholder="School's Short Name">
+      <input type="text" name="shortName"     class="form-control" id="" placeholder="School's Short Name">
     </div>
   </div>
   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">Postal Address</label>
+    <label class="col-sm-2 control-label">Postal Address  <font color="red">*</font></label>
     <div class="col-sm-6">
-      <textarea name="postAddress" rows = "3" class="form-control"  placeholder="Postal Address"> </textarea>
+      <textarea name="postAddress" rows = "3" class="form-control" required ="required" placeholder="Postal Address"> </textarea>
     </div>
   </div>
   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">Mobile</label>
+    <label  class="col-sm-2 control-label">Mobile  <font color="red">*</font></label>
     <div class="col-sm-6">
       <input type="tel" name="mobile" required="required" title="10 characters required" pattern =".{10,10}" class="form-control"  placeholder="Mobile">
     </div>
   </div>
   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">Tel</label>
+    <label class="col-sm-2 control-label">Tel  <font color="red">*</font></label>
     <div class="col-sm-6">
       <input type="tel" name="Tel" required="required" title="10 characters required" pattern =".{10,10}" class="form-control"  placeholder="Tel No.">
     </div>
   </div>
   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+    <label class="col-sm-2 control-label">Email  <font color="red">*</font></label>
     <div class="col-sm-6">
       <input type="email" name="e-mail" required="required" title="" class="form-control" placeholder="Email">
     </div>
   </div>
   
   <div class="form-group">
-    <label for="inputEmail3"  class="col-sm-2 control-label">Location</label>
+    <label  class="col-sm-2 control-label">Location  <font color="red">*</font></label>
     <div class="col-sm-6">
      <input type="text" name="loc"  required= "required" title=""   pattern =".{2,30}" class="form-control"  placeholder="Location">
     </div>
   </div>
   
 <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">School Type</label>
+    <label  class="col-sm-2 control-label">School Type</label>
     <div class="col-sm-6"> 
 <select  title="Select an option" class="form-control"   name="type">
   <option  value="Public">Public</option>

@@ -41,3 +41,8 @@ Timeline 12/02/2013
 6. teller should view reports by him/her
 7. Add student's ID during a transaction
 
+
+Timeline 23/03/2014
+1. Student payment must show only approved ones.
+
+

@@ -7,7 +7,10 @@
 
 <div class="panel panel-danger">
   <!-- Default panel contents -->
-  <div class="panel-heading">  <b> {{get_school.schoolName}} </b> </div>
+  <div class="panel-heading">  <b> {{get_school.schoolName}} </b> 
+  
+ <div class="col-lg-offset-9"> <b style= "margin-top:;">{{beige_date}}</b> </div>  
+  </div>
   
 
   
@@ -30,7 +33,7 @@
   <div class="col-lg-6 col-lg-offset-6">
     <div class="input-group">
       
-      <input type="text" name="q" class="form-control"  placeholder="{% ifequal iterm '' %}Search by student ID or Student Name {% else %} {{iterm}} {% endifequal %}">
+      <input type="text" name="q" required="required" class="form-control"  placeholder="{% ifequal iterm '' %}Search by student ID or Student Name {% else %} {{iterm}} {% endifequal %}">
       <span class="input-group-btn">
         <button class="btn btn-danger" type="submit">Go!</button>
       </span>
@@ -42,15 +45,15 @@
 </form>
   <ul class="nav nav-tabs" style="background-color:; margin-top:-30px;">
   <li class="active"><a href="#students" data-toggle="tab" style="color:brown;">Students</a></li>
-  <li><a href="#recent" data-toggle="tab">Recent Transactions</a></li>
-  <li><a href="#stats" data-toggle="tab">Statistics</a></li>
+ <!-- <li><a href="#recent" data-toggle="tab">Recent Transactions</a></li>
+  <li><a href="#stats" data-toggle="tab">Statistics</a></li>-->
   
 </ul>
-<h5> Search Results ({{nstudent_.count}}) Found  | <a href="/beige/school_details/{{get_school.pk}}/True"  style="color:brown;" > View All</a> </h5>
+<h5> Search Results ({{nstudent_.count}}) Found  | <a href="/beige/school_details/{{get_school.slug}}/True"  style="color:brown;" > View All</a> </h5>
 <!-- Tab panes -->
 <div class="tab-content">
   <div class="tab-pane fade in active" id="students">
-  
+  {% if student_|length %}
   <table class="table table-striped table-bordered table-condensed" style="margin-top:5px;">
                      					 <thead>
                        						 <tr>
@@ -72,7 +75,7 @@
         									<th><h><span class="muted"> </span>{{std.fullnameC}} &nbsp</h></th>
         									
         									
-        									<th><h><span class="muted"> </span> <a href="/beige/st-search/?q={{std.studentID}}" > view </a>&nbsp</h></th>
+        									<th><h><span class="muted"> </span> <a href="/beige/std_details/{{std.pk}}/True/" > view </a>&nbsp</h></th>
         									
       									</tr>
       									
@@ -100,12 +103,13 @@
   
   
   
-  
+  {% endif %}
   
   </div>
+  <!--
   <div class="tab-pane" id="recent">..2.</div>
   <div class="tab-pane" id="stats">..3.</div>
-  
+  -->
 </div>
   
   

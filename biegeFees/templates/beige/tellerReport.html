@@ -1,0 +1,181 @@
+{% extends "beige/dashboard.html" %}
+
+{%block title%}<title> School detail | {{school.schoolName}}</title> {%endblock title%}
+
+
+{% block content %}
+
+<div class="panel panel-danger">
+  <!-- Default panel contents -->
+  <div class="panel-heading">  <b> {{user}}'s transactions</b> </div>
+  
+
+  
+  <div class="panel-body">
+     
+<form class="form-horizontal" style="background-color:;margin-left:90px; margin-top:2px; height:35px;" action="." method="post">
+<div class="row" style="background-color:;margin-left:0px;width:;">
+  
+ <div class="form-group" style="background-color:;margin-left:5px; width:300px;">
+    <label class="col-sm-2 control-label">From</label>
+    <div class="col-sm-9">
+      <input type="date" required="required" name="from_date" value="{{from_date}}" class="form-control"  placeholder="From">
+    </div>
+  </div>
+  <div class="form-group" style="background-color:; width:300px; margin-top:-50px; margin-left:300px;">
+      <label class="col-sm-1 control-label">To</label>
+    <div class="col-sm-9" style="margin-left:10px;">
+      <input type="date"  required="required"  name="to_date" value="{{to_date}}" class="form-control"  placeholder="to">
+    </div>
+    </div>
+    <button  class="btn btn-danger" style="margin-left:600px; margin-top:-85px;" type="submit">Get Results</button>
+    
+
+</div>    
+    </form>
+     {% if refresh %}
+      <ul class="nav nav-tabs" style="background-color:; margin-top:-30px;">
+  <li class="active"><a href="#students" data-toggle="tab" style="color:brown;">Results({{trans_dated|length}})</a></li>
+ 
+  
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane fade in active" id="students">
+  
+  <table class="table table-striped table-bordered table-condensed" id="teller_print" style="margin-top:5px;">
+                     					 <thead>
+                       						 <tr>
+                              
+                               				                                		 
+                                         		 <th><b  style  = "color:brown;  position:relative;margin-left:10px;"><h>Student ID </h></b> </th>
+                                         		 <th> <b  style  = " color:brown; position:relative;margin-left:10px;"><h>School </h> </b></th>       
+                                         		 <th><b  style  = " color:brown; position:relative;margin-left:10px;"><h>Fees Type</h></b> </th>
+                                         		 <th><b  style  = " color:brown; position:relative;margin-left:10px;"><h>Amount</h></b> </th>
+                                         		 <th><b  style  = " color:brown; position:relative;margin-left:10px;"><h>Time</h></b> </th>
+                                         		 
+						
+                                             			</tr>
+                                                         </thead>
+
+
+								<tbody>
+      									{% for std in trans_dated %}
+      									<tr>
+      									<th><h><span class="muted"> </span>{{std.studentID.studentID}}&nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{std.studentID.schoolID.schoolName}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{std.feesType}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{std.amount}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{std.date_added}} &nbsp</h></th>
+        									
+        									
+        									
+      									</tr>
+      									
+      									{% endfor %}
+      								{% if amtSum %}
+      									<tr>
+      									<th><h><span class="muted"> </span>&nbsp</h></th>
+        									<th><h><span class="muted"> </span>&nbsp</h></th>
+        									<th><h><span class="muted"> </span> Total&nbsp</h></th>
+        									<th><h><span class="muted"> </span> {{amtSumDated}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span>&nbsp</h></th>
+        									
+        									
+        									
+      									</tr>
+      									{% endif %}
+      									
+    								</tbody>
+  							</table>
+  						
+  							
+  
+  
+  
+  <div style="background-color:;" ><button onclick="print_teller()" class="btn btn-default"> print</button></div>
+  </div>
+  
+
+  
+  
+  
+ </div>
+     
+     {% else %}
+  <ul class="nav nav-tabs" style="background-color:; margin-top:-30px;">
+  <li class="active"><a href="#students" data-toggle="tab" style="color:brown;">Today</a></li>
+ 
+  
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane fade in active" id="students">
+  
+  <table class="table table-striped table-bordered table-condensed" style="margin-top:5px;">
+                     					 <thead>
+                       						 <tr>
+                              
+                               				                                		 
+                                         		 <th><b  style  = "color:brown;  position:relative;margin-left:10px;"><h>Student ID </h></b> </th>
+                                         		 <th> <b  style  = " color:brown; position:relative;margin-left:10px;"><h>School </h> </b></th>       
+                                         		 <th><b  style  = " color:brown; position:relative;margin-left:10px;"><h>Fees Type</h></b> </th>
+                                         		 <th><b  style  = " color:brown; position:relative;margin-left:10px;"><h>Amount</h></b> </th>
+                                         		 <th><b  style  = " color:brown; position:relative;margin-left:10px;"><h>Time</h></b> </th>
+                                         		 
+						
+                                             			</tr>
+                                                         </thead>
+
+
+								<tbody>
+      									{% for std in report_today %}
+      									<tr>
+      									<th><h><span class="muted"> </span>{{std.studentID.studentID}}&nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{std.studentID.schoolID.schoolName}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{std.feesType}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{std.amount}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span>{{std.date_added}} &nbsp</h></th>
+        									
+        									
+        									
+      									</tr>
+      									
+      									{% endfor %}
+      								{% if amtSum %}
+      									<tr>
+      									<th><h><span class="muted"> </span>&nbsp</h></th>
+        									<th><h><span class="muted"> </span>&nbsp</h></th>
+        									<th><h><span class="muted"> </span> Total&nbsp</h></th>
+        									<th><h><span class="muted"> </span> {{amtSum}} &nbsp</h></th>
+        									<th><h><span class="muted"> </span>&nbsp</h></th>
+        									
+        									
+        									
+      									</tr>
+      									{% endif %}
+      									
+    								</tbody>
+  							</table>
+  						
+  							
+  
+  
+  
+  
+  </div>
+  
+
+  
+  
+  
+ </div>
+ 
+ {% endif %}
+ 
+ </div>
+
+
+{% endblock %}

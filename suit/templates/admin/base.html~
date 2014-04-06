@@ -1,4 +1,6 @@
-{% load admin_static %}{% load suit_tags %}{% load url from future %}<!DOCTYPE html>
+{% load admin_static %}{% load suit_tags %}{% load url from future %}
+{% load online_status_tags %}
+ <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
   <title>{% block title %}{{ title }} | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}</title>
@@ -181,12 +183,12 @@
           <a href="http://github.com/darklow/django-suit/issues" target="_blank" class="icon"><i class="icon-comment"></i>Report a bug</a>
         {% endblock %}
       </div>-->
-<!--
+
       <div class="copyright">
         {% block copyright %}
-          Copyright &copy; 2013 DjangoSuit.com<br>Developed by <a href="http://djangosuit.com" target="_blank">DjangoSuit.com</a>
+          Copyright &copy; 2013 Blupaygh.com<br>Developed by <a href="http://www.blupaygh.com" target="_blank">Blupaygh.com</a>
         {% endblock %}
-      </div> -->
+      </div> 
 
       <!--<div class="branding">{% block footer_branding %}
         {% with 'ADMIN_NAME'|suit_conf as admin_name %}

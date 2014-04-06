@@ -132,7 +132,6 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP+ (
 
 
 
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -140,6 +139,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'reversion.middleware.RevisionMiddleware',
+    'preventconcurrentlogins.middleware.PreventConcurrentLoginsMiddleware',
+    
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -179,21 +180,25 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     #'django.contrib.sites',
+    'preventconcurrentlogins',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
     'suit',
+   
     #'django_admin_bootstrapped.bootstrap3',
     #'django_admin_bootstrapped',
     'grappelli',
     'biegeFeesApp',
     'reversion',
+    'audit_trail',
+    
     # Uncomment the next line to enable the admin:
      'django.contrib.admin',
      'countries',
      'model_report',
      'django_evolution',
-    # 'audit',
+     
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

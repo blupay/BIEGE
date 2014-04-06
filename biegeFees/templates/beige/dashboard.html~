@@ -8,10 +8,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="GOD'S LOVE" >
-
+    {% block meta %}
+    <meta http-equiv="refresh" content="10000" />
+    {% endblock meta %}
     <!-- Le styles -->
+      
+  <script src="/static/bootstrap/dist/js/pace.min.js"></script> 
+  <link href="/static/bootstrap/dist/js/pace-white.css" rel="stylesheet" />
     <link href="/static/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
-    <link href="/static/bootstrap/dist/css/style.css" rel="stylesheet">
+    <!-- <link href="/static/bootstrap/dist/css/style.css" rel="stylesheet"> -->
     <link href="/static/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
   
 <script>
@@ -22,13 +27,51 @@ function print_popup()
 	printWin.document.write(printEle.outerHTML)
 	printWin.print();
 	printWin.close();
+	printWin.close();
 
 	
 
 }
 </script>  
-  
-  
+
+<script>
+function print_teller()
+{
+ var printEle = document.getElementById("teller_print");
+	var printWin = window.open("");
+	printWin.document.write(printEle.outerHTML)
+	printWin.print();
+	printWin.close();
+	printWin.close();
+
+	
+
+}
+</script>
+
+<script type="text/javascript">
+$( document ).ready( function() {
+    $( '#q' ).keyup( function() {
+        q = $( '#q' ).val();
+        $( '#results' ).html( '&nbsp;' ).load( '{% url search %}?q=' + q );
+    });
+});
+
+</script>
+
+<script langauge="javascript">  
+            var counter = 0;  
+            window.setInterval("refreshDiv()", 5000);  
+            function refreshDiv(){ 
+               
+                counter = counter + 1;  
+                document.getElementById("desk").innerHTML = "Testing " + counter;  
+            }  
+        </script> 
+         
+
+
+
      <style type="text/css">
       #stats-table td {
         font-size: 11px;
@@ -195,8 +238,14 @@ span.reference{
            -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
                 box-shadow: 0 1px 2px rgba(0,0,0,.05);
       }
-      
-
+      #stats-table td {
+        font-size: 11px;
+        padding: 6px;
+    }
+     #notifications div {
+        margin: 3px 0px;
+        font-size: 11px;
+    }
 
 
 
@@ -221,30 +270,27 @@ span.reference{
    <div id ="p3" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
            <img src="/static/images/download.jpg" height="50" width="150" alt=""><!--<a class="navbar-brand" href="#">BEIGE Capital</a> -->
         </div>
         <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="/beige/payment/" style="color:white;">New Transaction</a></li>
-            <li><a href="/beige/walk_in/" style=" {% ifequal request '/beige/walk_in/' %}background-color:#F5D8D4;{% endifequal %}" >Walk In</a></li>
-            <li><a href="Reports"></a></li>
+          <ul class="nav navbar-nav navbar-left">
+ {% ifequal currentUser_biege.category "Teller" %}          
+            <li><a href="/beige/payment/" style="color:white; border:3px; border-bottom:2px solid yellow;">New Transaction</a></li>
             
+            <li><a href="/beige/walk_in/" style="color:white; border:3px; border-bottom:2px solid black;{% ifequal request '/beige/walk_in/' %}background-color:#F5D8D4; color:black;{% endifequal %}" >Walk In</a></li>
+       
+      {% endifequal %}         
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li style="margin-top:15px; margin-right:40px;"> Security Level:{% ifequal user.is_superuser 1 %}<b style="color:white;">Admin</b>{% else %}<b style="color:white;">Teller</b>{% endifequal %}</li>
-            
+          
+            <li style="margin-top:15px; margin-right:40px;"> Signed in: {% ifequal user.is_staff 1 %}<b style="color:white;">Admin</b>{% else %}<b style="color:white;">{{currentUser_biege.category }}</b>{% endifequal %}</li>
+            <li  style="margin-top:15px;">BRANCH : <b style="color:white;">{% ifequal currentUser_biege None %} NONE {% else %}{{currentUser_biege.branch}}{% endifequal %}</b> </li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"> </span> <font color="white">Welcome</font>&nbsp {% ifnotequal user.first_name '' %}{{user.first_name}} {{user.last_name}}{% else %}{{user.username}} {% endifnotequal %}<b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="/beige/logout/">Log out</a></li>
-                <li class="divider"></li>
-                <li><a href="/beige/changepass">Change Password</a></li>
+                {% ifequal user.is_staff 0 %}<li class="divider"></li>
+                <li><a href="/beige/changepass">Change Password</a></li>{% endifequal %}
               </ul>
             </li>
           </ul>
@@ -259,13 +305,26 @@ span.reference{
     <div class="list-group">
  	 <a href="/beige/beige/dashboard/" class="list-group-item" style=" {% ifequal request '/beige/beige/dashboard/' %}background-color:#F5D8D4;{% endifequal %}">	
     <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-home"></span>&nbsp &nbsp Dash Board</h4>
-    <p class="list-group-item-text">All Registered Schools</p>
+    <p class="list-group-item-text">{% ifequal currentUser_biege.category "Teller" %} All Registered Schools {% endifequal %} 
+    																						{% ifequal currentUser_biege.category "Supervisor" %}All branch Tellers {% endifequal %} 
+    																						{% ifequal user.is_staff 1 %}All System Users {% endifequal %} 
+    	</p>
   </a>
+  {% ifequal currentUser_biege.category "Teller" %}
   <a href="/beige/payment/" class="list-group-item " style=" {% ifequal request '/beige/payment/' %}background-color:#F5D8D4;{% endifequal %}">	
     <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-plus"></span>&nbsp &nbsp New Transaction</h4>
     <p class="list-group-item-text">Perform new transaction</p>
   </a>
-  {% ifequal user.is_superuser 1 %}
+  {% endifequal %}
+  
+  {% ifequal currentUser_biege.category "Teller" %}
+  <a href="/beige/teller/report/" class="list-group-item " style=" {% ifequal request '/beige/teller/report/' %}background-color:#F5D8D4;{% endifequal %}">	
+    <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-plus"></span>&nbsp &nbsp Report</h4>
+    <p class="list-group-item-text">View transactions for the day</p>
+  </a>
+  {% endifequal %}
+  
+  {% ifequal user.is_staff 1 %}
   
   <a href="/beige/school_reg/" class="list-group-item" style=" {% ifequal request '/beige/school_reg/' %}background-color:#F5D8D4;{% endifequal %}">	
     <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-th-list"></span>&nbsp &nbsp School Registeration</h4>
@@ -309,14 +368,220 @@ span.reference{
 </div>
 </div>
 </div>
-<div class="col-sm-9 col-sm-offset-3 main" style="background:; {% ifequal user.is_superuser 1 %} margin-top:-410px; {% else %}  margin-top:-150px; {% endifequal %} ">
+<div class="col-sm-9 col-sm-offset-3 main" style="background:; {% ifequal user.is_staff 1 %} margin-top:-345px; {% endifequal %}{% ifequal  currentUser_biege.category 'Teller' %}  margin-top:-215px; {% endifequal %} {% ifequal  currentUser_biege.category 'Supervisor'  %}  margin-top:-86px; {% endifequal %}">
 {% block content %}
  <div class="panel panel-danger">
   <!-- Default panel contents -->
-  <div class="panel-heading">Dash Board</div>
+  <div class="panel-heading">
+  {% ifequal user.is_staff 1 %}
+  <b> System Users </b>
+<div class="col-lg-offset-9" style= "margin-top:-20px;"> <b>{{beige_date}}</b> </div>  
+  {% endifequal %}
+  
+  {% ifequal currentUser_biege.category "Supervisor"  %}
+  <b>{% ifnotequal get_teller None %} {{post_teller.fullName}}'s Portal {% else %}Tellers ({{tellers|length}}) {% endifnotequal %} </b>
+<div class="col-lg-offset-9" style= "margin-top:-20px;"> <b>{{beige_date}}</b> </div>  
+  {% endifequal %}
+  {% ifequal currentUser_biege.category "Teller"  %}
+  <form class="form-horizontal" role="form" action="/beige/sch/search/" method="GET">
+<div class="row">
+  <div class="col-lg-7">
+    <div class="input-group">
+      
+      <input type="text" name="q" required="required" class="form-control"  placeholder="School's Name Contain">
+      <span class="input-group-btn">
+        <button class="btn btn-danger" type="submit">Go!</button>
+      </span>
+    </div><!-- /input-group -->
+  
+  
+  </div>
+  <div class="col-lg-offset-9"> <b style= "margin-top:;">{{beige_date}}</b> </div>
+</div><!-- /.row -->
+
+
+
+<div id="results">
+        
+        
+        
+        
+        </div>
+</form>
+  
+ {% endifequal %}
+  
+  
+  
+  
+  
+  </div>
+  
+  {% ifequal user.is_staff 1 %}
+  <div class="panel-body">
+  <div class="col-md-8" style="background-color:;">	
+   {% ifnotequal beige_users|length 0 %} 
+   
+	<h5> Beige Users </h5>
+        {% if beige_users %}
+        <table cellpadding="3"  class="table table-bordered table-condensed">
+                     					 <thead>
+                       						 <tr>
+                              
+                               				 <th> <b  style  = " position:relative;margin-left:10px; font-size:12px;">Name  </b></th>
+                                   <th> <b  style  = " position:relative;margin-left:10px; font-size:12px;">Branch  </b></th>
+                                         		 
+                                         		 <th><b  style  = "font-size:12px; position:relative;margin-left:10px;"><h>Last Login</h></b> </th>
+                                         		 <th><b  style  = "font-size:12px; position:relative;margin-left:10px;"><h>Online status</h></b> </th>
+                                         		                                         		 
+                                             			</tr>
+                                                         </thead>
+
+
+								<tbody>
+      									{% for teller in beige_users %}
+      									<tr>
+      									
+        									<th style="font-size:12px;"> {% ifequal teller.active 1 %}<a href="#" target="" style="color:#780000;"> {{teller.fullName}}{% endifequal %} {% ifequal teller.active 0 %} {{teller.fullName}} {% endifequal %} </a> </th>
+        									<th style="font-size:12px;">  {{teller.branch}} &nbsp  </th>
+        										<th  style="font-size:12px;">{{teller.last_login}} &nbsp</th>
+        										<th>{% ifequal teller.online_status 0 %}<img src="/static/images/icon-no.gif" style="margin-left:5px;" width="15px" alt="" > {% endifequal %}{% ifequal teller.online_status 1 %}<img src="/static/images/icon-yes.gif" style="margin-left:5px;" width="15px" alt="" > {% endifequal %} &nbsp</th>
+        								
+        									
+      									</tr>
+      									
+      									{% endfor %}
+      									
+    								</tbody>
+    								
+    								
+ 
+  							</table>
+  							
+  							
+  							{% endif %}
+          
+          
+<h5> School Users </h5>
+        {% if school_users  %}    
+        
+            <table cellpadding="3"  class="table table-bordered table-condensed">
+                     					 <thead>
+                       						 <tr>
+                              
+                               				 <th> <b  style  = " position:relative;margin-left:10px; font-size:12px;">Name  </b></th>
+                                   
+                                         		 <th> <b  style  = " position:relative;margin-left:10px; font-size:12px;">School  </b></th>
+                                         		 <th><b  style  = "font-size:12px; position:relative;margin-left:10px;"><h>Last Login</h></b> </th>
+                                         		 <th><b  style  = "font-size:12px; position:relative;margin-left:10px;"><h>Online status</h></b> </th>
+                                         		 
+                                         		 
+                                             			</tr>
+                                                         </thead>
+
+
+								<tbody>
+      									{% for teller in school_users %}
+      									<tr>
+      									
+        									<th style="font-size:12px;"> {% ifequal teller.active 0 %}{{teller.fullName}} {% endifequal %}{% ifequal teller.active 1 %}<a href="#" target="" style="color:brown;"> {{teller.fullName}}  </a> {% endifequal %}</th>
+        									<th style="font-size:12px;">  {{teller.School.schoolName}} </th>
+        										<th  style="font-size:12px;">{{teller.last_login}} &nbsp</th>
+        										<th>{% ifequal teller.online_status 0 %}<img src="/static/images/icon-no.gif" style="margin-left:5px;" width="15px" alt="" > {% endifequal %}{% ifequal teller.online_status 1 %}<img src="/static/images/icon-yes.gif" style="margin-left:5px;" width="15px" alt="" > {% endifequal %} &nbsp</th>
+        									
+        									
+      									</tr>
+      									
+      									{% endfor %}
+      									
+    								</tbody>
+    								
+    								
+ 
+  							</table>
+          	{% endif %}
+          
+    {% endifnotequal %}
+    </div> 
+    
+    <div class="col-sm-4" style="border:3px solid grey; border-radius:5px;">
+
+ 
+
+<h4> Transactions Feed </h4>
+<div class="alert alert-danger fade in">
+        <!--<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>-->
+        
+        
+        <div style=""> 
+       
+        <p style ="border-bottom:1px solid white;">* <b>{{trans_today|length}}</b> transaction{% ifnotequal trans_today|length 1 %}s{% endifnotequal %} today ..<a href="#">view</a></p>
+
+        
+        <p style ="border-bottom:1px solid white;">*<b> {{trans_today_approved|length}}</b> <font  color="black">approved</font> transaction{% ifnotequal trans_today_approved|length 1 %}s{% endifnotequal %} today ..<a href="#">view</a></p> 
+       
+       
+        <p style ="border-bottom:1px solid white;">* <b>{{trans_today_pending|length}}</b> <font color="grey">pending </font>transaction{% ifnotequal trans_today_pending|length 1 %}s{% endifnotequal %} today ..<a href="#">view</a></p>      
+         
+        
+       
+        </div>
+        
+      </div>
+      <h4> Statistics </h4>
+     <table border="0" cellpadding="3" class="table table-bordered" id="stats-table">
+            <tbody>
+            <tr>
+                <td>Total Transactions</td>
+                <td>3244</td>
+            </tr>
+            <tr>
+                <td>Appoved Transactions</td>
+                <td>3000</td>
+            </tr>
+            <tr>
+                <td>Declined Transactions</td>
+                <td>244</td>
+            </tr>
+           
+            
+            
+            
+        </tbody></table>    
+</div> 
+
+
+    
+    </div>
+  {% endifequal %}
+  
+  
+  
+  {% ifequal currentUser_biege.category "Teller" %}
   <div class="panel-body">
   
   <div class="row">
+  {% ifnotequal  results|length 0 %}
+ 
+   {% for sch in results %}
+<blockquote>
+<p>
+                        	<a href="/beige/school_details/{{sch.slug}}/True" target="" style="color:brown;">{{sch.schoolName}}</a><br/>
+                        	
+
+   	                        </p>
+	                         
+</blockquote>  
+  {% endfor %}
+  
+  
+  {% endifnotequal %}
+  
+  {% ifequal results|length 0 %}
+  <p> No results found</p>
+  {% endifequal %}
+  
+  {% ifequal results None %}
     <div class="col-md-8" style="background-color:;">	
 	<h3>List of Schools</h3>
         <!-- <table border="0" cellpadding="3" class="table table-bordered" id="stats-table">
@@ -341,7 +606,7 @@ span.reference{
                               
                                				 <th> <b  style  = " position:relative;margin-left:10px;"><h>Registered Schools </h> </b></th>
                                    
-                                         		 <th><b  style  = " position:relative;margin-left:10px;"><h>Number of Registered students</h></b> </th>
+                                         		 <th><b  style  = " position:relative;margin-left:10px;"><h>Number of Students</h></b> </th>
                                          		
                                          		 
                                              			</tr>
@@ -352,7 +617,7 @@ span.reference{
       									{% for sch in schools %}
       									<tr>
       									
-        									<th><h><span class="muted"> </span> <a href="/beige/school_details/{{sch.pk}}/True" target="" style="color:brown;"> {{sch.schoolName}} &nbsp  </a> </h></th>
+        									<th><h><span class="muted"> </span> <a href="/beige/school_details/{{sch.slug}}/True" target="" style="color:brown;"> {{sch.schoolName}} &nbsp  </a> </h></th>
         									<th><h><span class="muted"></span>{{sch.Number_of_Student}} &nbsp</h></th>
         									
         									
@@ -385,12 +650,13 @@ span.reference{
           
     
     </div>
+    
 <div class="col-sm-4">
 <h3>Notifications</h3>
 <div class="alert alert-danger fade in">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h4>Recent Transactions </h4>
-        <p> Total transactions: {{transaction|length}} (all branches)</p>
+        <h4>Transactions </h4>
+        <p> <b>{{transaction|length}}</b> transactions <a href="/beige/teller/report/">details</a></p>
         <p>
           
           
@@ -401,14 +667,156 @@ span.reference{
         <h4>Last Login</h4>
         <p>{{user.last_login}}</p>
         <p>
-          
+          IP: {{ip}}
           
         </p>
       </div>
-</div>    
+</div>  
+{% endifequal %}  
   </div>  
     
   </div>
+   {% endifequal %}
+   
+{% ifequal currentUser_biege.category "Supervisor"  %}
+    <div class="panel-body">
+   <div class="row">
+   
+    <div class="col-md-8" style="background-color:;">	
+    
+   {% ifnotequal tellers|length 0 %} 
+	<h3> Portal </h3>
+        
+        <table cellpadding="3"  class="table table-bordered table-condensed">
+                     					 <thead>
+                       						 <tr>
+                              
+                               				 <th> <b  style  = " position:relative;margin-left:10px;"><h>Name </h> </b></th>
+                                   
+                                         		 <th><b  style  = " position:relative;margin-left:10px;"><h>Username</h></b> </th>
+                                         		 <th><b  style  = " position:relative;margin-left:10px;"><h>Last Login</h></b> </th>
+                                         		 <th><b  style  = " position:relative;margin-left:10px;"><h>Online status</h></b> </th>
+                                         		
+                                         		 
+                                             			</tr>
+                                                         </thead>
+
+
+								<tbody>
+      									{% for teller in tellers %}
+      									<tr>
+      									
+        									<th><h><span class="muted"> </span> <a href="/beige/teller/details/{{teller.slug}}/True" target="" style="color:brown;"> {{teller.fullName}} &nbsp  </a> </h></th>
+        									<th><h><span class="muted"></span>{{teller.username}} &nbsp</h></th>
+        										<th><h><span class="muted"></span>{{teller.last_login}} &nbsp</h></th>
+        										<th><h><span class="muted"></span>{% ifequal teller.online_status 0 %}<img src="/static/images/icon-no.gif" style="margin-left:5px;" width="15px" alt="" > {% endifequal %}{% ifequal teller.online_status 1 %}<img src="/static/images/icon-yes.gif" style="margin-left:5px;" width="15px" alt="" > {% endifequal %} &nbsp</h></th>
+        									
+        									
+      									</tr>
+      									
+      									{% endfor %}
+      									
+    								</tbody>
+    								
+    								
+ 
+  							</table>
+  							
+  							
+  							<div class="pagination-centered"  style="margin-left:150px;">
+    <span class="step-links">
+        {% if tellers.has_previous %}
+            <a href="?page={{ tellers.previous_page_number }}">previous</a>
+        {% endif %}
+        
+        <span class="current">
+            Page {{ tellers.number }} of {{ tellers.paginator.num_pages }}.
+        </span>
+
+        {% if tellers.has_next %}
+            <a href="?page={{ tellers.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>       
+          
+    
+    </div>
+<div class="col-sm-4" style="border:3px solid grey; border-radius:5px;">
+
+<div  id="test">  
+            
+            {% include "beige/approve.html" %} 
+        </div>  
+        
+
+ 
+<!--
+<h4>Recent Transactions </h4>
+<div class="alert alert-danger fade in">
+        <!--<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        
+        {% if tellers_transactions %}
+        {% for trans in tellers_transactions %}
+        <div style="border-bottom:2px solid white;"> 
+        
+        <span class="badge pull-left" style"border-bottom:1px solid white; margin-top:1px; margin-bottom:5px;">{{forloop.counter}}</span>
+        <b style="margin-top:3px;">{{trans.amount}}</b> by {{trans.tellerID}}
+        
+        <form class="form-horizontal" style="margin-top:-20px; margin-bottom:2px; margin-left:130px;"  action="." method="post">
+        <button class="btn btn-default" name="t"  value="{{trans.pk}}"  type="submit">approve</button>
+                
+        </form>
+       
+        </div>
+        {% endfor %}
+        {% else %}
+        <p> No transactions</p>
+        {% endif %}
+      </div>-->
+      <!--
+<div class="alert alert-warning fade in">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4>Last Login</h4>
+        <p>{{user.last_login}}</p>
+        <p>
+          
+          
+        </p>
+      </div>-->
+</div>    
+  
+{% endifnotequal %}  
+  </div> 
+</div>    
+ {% ifnotequal approval '' %}  
+<div class="modal fade in" id="myModal">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#f2dede;">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" >  </h4>
+      </div>
+      <div class="modal-body" >
+       
+        
+        Transaction successfully approved!!
+        
+        
+        
+        </p>
+      </div>
+      
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+   
+   {% endifnotequal %} 
+   
+    {% endifequal %}   
+   
+   
+   
+   
 
 </div>
       
@@ -417,15 +825,21 @@ span.reference{
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+   <script src="/static/bootstrap/dist/js/bootstrap.js"></script>
+   
+
    <script src="/static/bootstrap/dist/js/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/static/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- <script src="/static/bootstrap/dist/js/bootstrap.js"></script> -->
+     
     <script type="text/javascript">
     $function(){
-	$('#example').tooltip(options);    
+	            $('.element').tooltip('show')   
     }
-</script>
+        </script>
+        
+        
+
 
 <script type="text/javascript">
  $function(){
@@ -442,20 +856,25 @@ span.reference{
  	 	})	
  	 	</script>
  	 	
- 	 	<script type="text/javascript">
-var rowNum = 0;
-function addRow(frm) {
-	rowNum ++;
-	var row = '<div class = "form-group" id="rowNum'+rowNum+'"><label for="inputEmail3" class="col-sm-2 control-label">Location </label><div class="col-sm-6"> <input type="text" class = "form-control" name="qty[]" size="4" value="'+frm.add_qty.value+'"></div> <input type="button" class="btn btn-primary" value="Remove" onclick="removeRow('+rowNum+');"></div>';
-	jQuery('#itemRows').append(row);
-	frm.add_qty.value = '';
-	frm.add_name.value = '';
+ 	 <script type="text/javascript" >
+
+
+function refresh() {
+    $.ajax({
+        url: '{% url monitor-test %}',
+        success: function(data) {
+            $('#test').html(data);
+        }
+    });
+    setInterval("refresh()", 10000);
 }
 
-function removeRow(rnum) {
-	jQuery('#rowNum'+rnum).remove();
-}
+$(function(){
+    refresh();
+});
 </script>
+    
+    
     
   </body>
 </html>

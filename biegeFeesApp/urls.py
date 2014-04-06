@@ -16,22 +16,31 @@ urlpatterns = patterns('',
 
                   #beige details
 		  url(r'^login/$', 'biegeFeesApp.views.beige_login'),
-		  url(r'^beige/dashboard/$', 'biegeFeesApp.views.beige_dashboard'),
+		  url(r'^beige/dashboard/$', 'biegeFeesApp.views.beige_dashboard',name = 'monitor-test'),
 		  #url(r'^payment/$', 'biegeFeesApp.views.beige_payment'),
+		  
+		  url(r'^monitor/$', 'biegeFeesApp.views.monitor', name = 'monitor' ),
+		  
+		  
 		  url(r'^school_reg/$', 'biegeFeesApp.views.school_reg'),
 		  url(r'^add_school_user/$', 'biegeFeesApp.views.adduser_sch'),
                   url(r'^add_beige_user/$', 'biegeFeesApp.views.adduser_beige'),
-		  url(r'^school_details/(?P<id>\d+)/((?P<showDetails>.*)/)?$', 'biegeFeesApp.views.school_detail'),
+                  
+		  url(r'^school_details/(?P<term>.*?)/(?P<showDetails>.*?)/$', 'biegeFeesApp.views.school_detail'),
+		  
                   url(r'^st_search/(?P<term>.*?)$','biegeFeesApp.views.student_search_beige'),
                   url(r'^walk_in/$', 'biegeFeesApp.views.walk_in'),
-		 
+                  url(r'^teller/report/$', 'biegeFeesApp.views.teller_report'),
+                  url(r'^search/$', search, name = 'search' ),
+                  url(r'^sch/search/(?P<term>.*?)$','biegeFeesApp.views.sch_search' ),
+		  url(r'^teller/details/(?P<term>.*?)/(?P<showDetails>.*?)/$', 'biegeFeesApp.views.teller_details'),
                   
 			# Transaction Urls
                   url(r'^st-search/(?P<term>.*?)$','biegeFeesApp.views.student_search'),
-                  url(r'^std_details/(?P<id>\d+)/((?P<showDetails>.*)/)?$', 'biegeFeesApp.views.payment_detail'),
- 		  url(r'^st_details/(?P<id>\d+)/((?P<showDetails>.*)/)?$', 'biegeFeesApp.views.student_detail'),
+                  url(r'^std_details/(?P<term>.*?)/(?P<showDetails>.*?)/$', 'biegeFeesApp.views.payment_detail'),
+ 		  url(r'^st_details/(?P<term>.*?)/(?P<showDetails>.*?)/$', 'biegeFeesApp.views.student_detail'),
                   url(r'^payment/$', 'biegeFeesApp.views.payment'),
-                  url(r'^print/(?P<id>\d+)/((?P<showDetails>.*)/)?$', 'biegeFeesApp.views.print_trans'),
+                  url(r'^print/(?P<term>.*?)/(?P<showDetails>.*?)/$', 'biegeFeesApp.views.print_trans'),
 
 			#beige Change Password
 		  url(r'^changepass/$','biegeFeesApp.views.password_change'),

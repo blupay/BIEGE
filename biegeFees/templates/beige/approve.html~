@@ -1,0 +1,22 @@
+<h4>Recent Transactions </h4>
+<div class="alert alert-danger fade in" >
+        <!--<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>-->
+        
+        {% if tellers_transactions %}
+        {% for trans in tellers_transactions %}
+        <div style="border-bottom:2px solid white;"> 
+        
+        <span class="badge pull-left" style"border-bottom:1px solid white; margin-top:1px; margin-bottom:5px;">{{forloop.counter}}</span>
+        <b style="margin-top:3px;">{{trans.amount}}</b> by {{trans.tellerID}}
+        
+        <form class="form-horizontal" style="margin-top:-20px; margin-bottom:2px; margin-left:130px;"  action="." method="post">
+        <button class="btn btn-default" name="t"  value="{{trans.pk}}"  type="submit">approve</button>
+                
+        </form>
+       
+        </div>
+        {% endfor %}
+        {% else %}
+        <p> No transactions</p>
+        {% endif %}
+      </div>

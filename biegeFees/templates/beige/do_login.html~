@@ -77,11 +77,11 @@
     <![endif]-->
 
     <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
       <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
                     <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
-                                   <link rel="shortcut icon" href="../assets/ico/favicon.png">
+                                   <link rel="shortcut icon" href="../assets/ico/favicon.png">-->
   </head>
 
   
@@ -144,18 +144,18 @@
        <!--  {{ form.as_p }} -->
         <button class="btn btn-lg btn-primary btn-block" type="submit" value="">Sign in</button>
 
-{% ifnotequal empty_cred '' %}
-<div class="alert alert-error fade in" style="float:;width:270px;margin-top:;margin-bottom:;margin-right:;">
-	<a class="close" data-dismiss="alert" href="#my-alert">&times;</a>
-	<h4 class="alert-heading">Login Failure!</h4>
-	<p style="text-align:justify;">{{ empty_cred }}</p>
+
+{% if wrong_attempt %} 
+<div class="alert alert-warning fade in" style="float:;width:240px;margin-top:20px;margin-bottom:;margin-right:;">
+	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	<h4 class="alert-heading">Session Terminated!</h4>
+	<p style="text-align:justify;">{{wrong_attempt}}</p>
 	</div>
-{% endifnotequal %}
-
-
+	{% endif %}
+	
 {% ifnotequal invalidMsg '' %}
-<div class="alert alert-error fade in" style="float:;width:270px;margin-top:;margin-bottom:;">
-	<a class="close" data-dismiss="alert" href="#my-alert">&times;</a>
+<div class="alert alert-danger fade in" style="width:240px; margin-top:20px;">
+	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 	<h4 class="alert-heading">Login Failure!</h4>
 	<p style="text-align:justify;">{{ invalidMsg }}</p>
 	</div>
@@ -168,5 +168,23 @@
 
     </div> 
     
+    
+    
+    
+<script src="/static/bootstrap/dist/js/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/bootstrap/dist/js/bootstrap.min.js"></script>    
+    <script type="text/javascript">
+    $('#my-alert').bind('closed.bs.alert', function () {
+  // do something…
+      $(".alert").alert()
+     
+     })
+		</script>
+		
+		<script type="text/javascript">
+ $function(){
+ $(".alert").alert()}
+</script>
   </body>
 </html>
